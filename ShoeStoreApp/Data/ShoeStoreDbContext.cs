@@ -23,6 +23,5 @@ namespace ShoeStoreApp.Data
             : base(options)
         {
         }
-
     }
 }
