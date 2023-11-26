@@ -4,6 +4,10 @@ using ShoeStoreApp.Configs;
 using ShoeStoreApp.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using ShoeStoreApp.Services;
+using ShoeStoreApp.Utils;
+using ShoeStoreApp.Models;
 internal class Program
 {
     private static void Main(string[] args)
@@ -15,9 +19,11 @@ internal class Program
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
+        builder.Services.AddTransient<IEmailSender, EmailSender>();
         builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            .AddEntityFrameworkStores<ShoeStoreAppContext>();
+        builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddEntityFrameworkStores<ShoeStoreAppContext>()
+            .AddErrorDescriber<VietnameseIdentityErrorDescriber>();
         builder.Services.AddRazorPages();
 
         builder.Services.Configure<IdentityOptions>(options =>
@@ -38,7 +44,7 @@ internal class Program
             // User settings.
             options.User.AllowedUserNameCharacters =
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-            options.User.RequireUniqueEmail = false;
+            options.User.RequireUniqueEmail = true;
         });
 
         builder.Services.ConfigureApplicationCookie(options =>

@@ -1,4 +1,6 @@
-﻿namespace ShoeStoreApp.Models
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+
+namespace ShoeStoreApp.Models
 {
     public class DeliveryAddress
     {
