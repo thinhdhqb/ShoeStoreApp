@@ -1,4 +1,4 @@
-/* global bootstrap: false */
+﻿/* global bootstrap: false */
 (() => {
     "use strict";
     feather.replace({ "aria-hidden": "true" });
@@ -54,3 +54,4 @@
         },
     });
 })();
+
