@@ -9,12 +9,11 @@ using ShoeStoreApp.Models;
 
 namespace ShoeStoreApp.Data
 {
-    public class ShoeStoreAppContext : IdentityDbContext<IdentityUser>
+    public class ShoeStoreAppContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<Customer> Customers { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<DeliveryAddress> DeliveryAddresses { get; set; }
 
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }

@@ -1,0 +1,149 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Địa chỉ";
+    ViewData["ActivePage"] = ManageNavPages.Address;
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+<div class="row">
+    <div>
+        <div class="info-item-title mb-2">
+            <h3 class="d-inline me-4">Địa chỉ</h3>
+            <span id="btn-add"
+                  class="btn-icon text-secondary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#add-address-modal"><i class="fa-solid fa-plus"></i> Thêm</span>
+        </div>
+        <div class="address-container">
+            <div class="mb-1 fw-bold border border-primary text-primary p-2"
+                 style="width: fit-content">
+                Mặc định
+            </div>
+            <div class="mb-1">
+                <span class="text-secondary">Họ và tên:&emsp;</span>
+                <span>Bùi Quang Thịnh</span>
+            </div>
+            <div class="mb-1">
+                <span class="text-secondary">Điện thoại liên hệ:&emsp;</span>
+                <span>0123456898</span>
+            </div>
+            <div class="mb-1">
+                <span class="text-secondary">Địa chỉ:&emsp;</span>
+                <span>1 Nguyễn Hữu Thọ, Phường Tân Phong, Quận 7, TP HCM</span>
+            </div>
+            <div class="btn-icon text-secondary"
+                 data-bs-toggle="modal"
+                 data-bs-target="#update-address-modal">
+                <i class="fa-solid fa-pen"></i>
+            </div>
+        </div>
+        <div class="address-container">
+            <div class="mb-1">
+                <span class="text-secondary">Họ và tên:&emsp;</span>
+                <span>Bùi Quang Thịnh</span>
+            </div>
+            <div class="mb-1">
+                <span class="text-secondary">Điện thoại liên hệ:&emsp;</span>
+                <span>0123456898</span>
+            </div>
+            <div class="mb-1">
+                <span class="text-secondary">Địa chỉ:&emsp;</span>
+                <span>1 Nguyễn Hữu Thọ, Quận 7, TP HCM</span>
+            </div>
+            <div class="btn-icon text-secondary"
+                 data-bs-toggle="modal"
+                 data-bs-target="#update-address-modal">
+                <i class="fa-solid fa-pen"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="add-address-modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thêm địa chỉ mới</h5>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3 form-floating">
+                        <input type="email"
+                               class="form-control"
+                               id="address-name"
+                               placeholder="" />
+                        <label for="profile-name" class="form-label">Họ và tên</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input type="text"
+                               class="form-control"
+                               placeholder=""
+                               id="address-phone" />
+                        <label for="address-phone" class="form-label">Số điện thoại</label>
+                    </div>
+                    <div class="mb-3 form-floating">
+                        <input type="text"
+                               placeholder=""
+                               class="form-control"
+                               id="address-house" />
+                        <label for="profile-phone" class="form-label">Địa chỉ nhà</label>
+                    </div>
+                    <div class="mb-3 row gx-1">
+                        <div class="col-4 form-floating">
+                            <select class="form-select"
+                                    id="select-cỉty">
+                                <option selected>
+                                    Chọn tỉnh / thành phố
+                                </option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                            <label for="select-city" class="form-label">Tỉnh / Thành phố</label>
+                        </div>
+                        <div class="col-4 form-floating">
+                            <select class="form-select"
+                                    id="select-district">
+                                <option selected></option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                            <label for="select-district"
+                                   class="form-label">Quận / Huyện</label>
+                        </div>
+                        <div class="col-4 form-floating">
+                            <select class="form-select"
+                                    id="select-ward">
+                                <option selected></option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                            <label for="select-ward" class="form-label">Phường / Xã</label>
+                        </div>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               value=""
+                               id="default-address-check" />
+                        <label class="form-check-label"
+                               for="default-address-check">
+                            Đặt làm địa chỉ mặc định
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a class="link-dark" data-bs-dismiss="modal">Hủy</a>
+                <button type="button" class="btn btn-dark">Thêm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
