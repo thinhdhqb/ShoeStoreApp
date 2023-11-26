@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Noticia+Text:wght@400;700&display=swap');
+
+html, body {
+    height: 100vh;
+}
+
+#search-form {
+    position: relative;
+}
+
+#search-form i {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 10px;
+}
+
+#search-form input {
+    padding-left: 32px;
+}
+
+
+#product-list-container {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+}
+
+#product-list {
+    padding-left: 260px;
+}
+
+#filter-sidebar {
+    width: 240px;
+    height: 100%;
+    z-index: 1;
+    position: absolute;
+    overflow-y: scroll;
+    padding-bottom: 150px;
+    padding-right: 20px;
+}
+
+#filter-sidebar.stickIt {
+    position: fixed;
+    top: 16px;
+    bottom: 0;
+}
+
+
+#filter-sidebar hr {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.filter-item {
+    margin-bottom: 14px;
+}
+
+
+
+.card {
+    border: none;
+}
+
+.card:hover {
+    cursor: pointer;
+}
+
+.price {
+    font-family: 'Noticia Text', serif;
+    font-size: larger;
+}
+
+.card-img-top {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-img-top img {
+    width: 100%;
+    position: absolute;
+    top: -9999px;
+    bottom: -9999px;
+    left: -9999px;
+    right: -9999px;
+    margin: auto;
+}
+
+.category-link {
+    font-weight: 500;
+    font-size: large;
+    color: black;
+    text-decoration: none;
+}
+
+.category-link.selected {
+    text-decoration: underline;
+}
+
+.img-container {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
+}
+
+.hidden {
+    display: none;
+}
+
+.img-container img {
+    width: 100%;
+    position: absolute;
+    top: -9999px;
+    bottom: -9999px;
+    left: -9999px;
+    right: -9999px;
+    margin: auto;;
+}
+
+
+
