@@ -15,6 +15,7 @@
             crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
+    @RenderSection("Styles", false)
 </head>
 <body>
     <header>
@@ -39,14 +40,6 @@
                             <a class="nav-link" href="/search?gender=women">NỮ</a>
                         </li>
                     </ul>
-                    <!-- Icons -->
-                    <ul class="navbar-nav d-flex flex-row me-1">
-                        <li class="nav-item me-3 me-lg-0">
-                            <a class="nav-link" href="/cart">
-                                <i class="fas fa-shopping-cart"></i>
-                            </a>
-                        </li>
-                    </ul>
                     <!-- Search -->
                     <form class="w-auto me-1" id="search-form">
                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -57,7 +50,15 @@
                                aria-label="Search" />
                     </form>
                     <button class="btn btn-outline-dark" id="search-btn">Tìm kiếm</button>
-
+                    <!-- Icons -->
+                    <ul class="navbar-nav d-flex flex-row me-1">
+                        <li class="nav-item me-3 me-lg-0">
+                            <a class="nav-link" href="/cart">
+                                <i class="fas fa-shopping-cart"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    @await Html.PartialAsync("_LoginPartial")
 
                 </div>
             </div>
