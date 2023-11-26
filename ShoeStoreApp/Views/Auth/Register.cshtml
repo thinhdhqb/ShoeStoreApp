@@ -4,6 +4,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Styles {
+    <link href="@Url.Content("~/css/login.css")" rel="stylesheet" type="text/css" />
+}
+
 <!-- Main Container -->
 <div class="main-container container pt-3 h-100">
     <div class="mb-3 auth-form-container">
@@ -32,10 +36,10 @@
                    name="passwordConfirm"
                    placeholder="Xác nhận mật khẩu" />
         </div>
-        <button class="btn btn-dark w-50 p-3 mb-3">Đăng ký</button>
+        <button class="btn btn-dark p-3 mb-3">Đăng ký</button>
         <div class="text-secondary">
             Đã có tài khoản ?
-            <a href="login.html"
+            <a href="/Auth/Login"
                class="link-primary link-underline link-underline-opacity-0">Đăng nhập</a>
         </div>
         <div class="mt-5">

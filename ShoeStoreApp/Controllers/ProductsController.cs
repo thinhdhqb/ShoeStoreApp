@@ -12,9 +12,9 @@ namespace ShoeStoreApp.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly ShoeStoreDbContext _context;
+        private readonly ShoeStoreAppContext _context;
 
-        public ProductsController(ShoeStoreDbContext context)
+        public ProductsController(ShoeStoreAppContext context)
         {
             _context = context;
         }
