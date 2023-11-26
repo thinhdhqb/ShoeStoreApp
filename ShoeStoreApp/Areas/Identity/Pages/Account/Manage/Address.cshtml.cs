@@ -9,21 +9,24 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ShoeStoreApp.Data;
 using ShoeStoreApp.Models;
 
 namespace ShoeStoreApp.Areas.Identity.Pages.Account.Manage
 {
-    public class IndexModel : PageModel
+    public class Address : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ShoeStoreAppContext _context;
 
-        public IndexModel(
+        public Address(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager, ShoeStoreAppContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         /// <summary>
@@ -31,6 +34,8 @@ namespace ShoeStoreApp.Areas.Identity.Pages.Account.Manage
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public string Username { get; set; }
+
+        public List<DeliveryAddress> Addresses { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -52,13 +57,31 @@ namespace ShoeStoreApp.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
+            [Required]
+            [Display(Name = "Họ và tên")]
+            public string Name { get; set; }
+
+            [Required]
             [Phone]
             [Display(Name = "Số điện thoại")]
             public string PhoneNumber { get; set; }
+
+            [Required]
+            [Display(Name = "Địa chỉ nhà")]
+            public string HouseAddress { get; set; }
+
+            [Required]
+            [Display(Name = "Tỉnh / Thành phố")]
+            public string CityAddress { get; set; }
+
+
+            [Required]
+            [Display(Name = "Quận / Huyện")]
+            public string DistrictAddress { get; set; }
+
+            [Required]
+            [Display(Name = "Phường / Xã")]
+            public string WardAddress { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -67,6 +90,8 @@ namespace ShoeStoreApp.Areas.Identity.Pages.Account.Manage
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
             Username = userName;
+
+            Addresses = _context.DeliveryAddresses.ToList();
 
             Input = new InputModel
             {

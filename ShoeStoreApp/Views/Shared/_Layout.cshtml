@@ -40,6 +40,8 @@
                             <a class="nav-link" href="/search?gender=women">NỮ</a>
                         </li>
                     </ul>
+                    @await Html.PartialAsync("_LoginPartial")
+
                     <!-- Icons -->
                     <ul class="navbar-nav d-flex flex-row me-1">
                         <li class="nav-item me-3 me-lg-0">
@@ -59,7 +61,6 @@
                     </form>
                     <button class="btn btn-outline-dark" id="search-btn">Tìm kiếm</button>
 
-                    @await Html.PartialAsync("_LoginPartial")
 
                 </div>
             </div>

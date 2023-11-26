@@ -12,7 +12,7 @@ using ShoeStoreApp.Data;
 namespace ShoeStoreApp.Migrations
 {
     [DbContext(typeof(ShoeStoreAppContext))]
-    [Migration("20231126151359_Db1")]
+    [Migration("20231126165118_Db1")]
     partial class Db1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -253,7 +253,7 @@ namespace ShoeStoreApp.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("DeliveryAddress");
+                    b.ToTable("DeliveryAddresses");
                 });
 
             modelBuilder.Entity("ShoeStoreApp.Models.Order", b =>

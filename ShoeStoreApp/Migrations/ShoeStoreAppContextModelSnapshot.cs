@@ -251,7 +251,7 @@ namespace ShoeStoreApp.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("DeliveryAddress");
+                    b.ToTable("DeliveryAddresses");
                 });
 
             modelBuilder.Entity("ShoeStoreApp.Models.Order", b =>

@@ -173,7 +173,7 @@ namespace ShoeStoreApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DeliveryAddress",
+                name: "DeliveryAddresses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -185,9 +185,9 @@ namespace ShoeStoreApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DeliveryAddress", x => x.Id);
+                    table.PrimaryKey("PK_DeliveryAddresses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DeliveryAddress_AspNetUsers_ApplicationUserId",
+                        name: "FK_DeliveryAddresses_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
@@ -237,9 +237,9 @@ namespace ShoeStoreApp.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Orders_DeliveryAddress_DeliveryAddressId",
+                        name: "FK_Orders_DeliveryAddresses_DeliveryAddressId",
                         column: x => x.DeliveryAddressId,
-                        principalTable: "DeliveryAddress",
+                        principalTable: "DeliveryAddresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -332,8 +332,8 @@ namespace ShoeStoreApp.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DeliveryAddress_ApplicationUserId",
-                table: "DeliveryAddress",
+                name: "IX_DeliveryAddresses_ApplicationUserId",
+                table: "DeliveryAddresses",
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
@@ -397,7 +397,7 @@ namespace ShoeStoreApp.Migrations
                 name: "ProductVariantItems");
 
             migrationBuilder.DropTable(
-                name: "DeliveryAddress");
+                name: "DeliveryAddresses");
 
             migrationBuilder.DropTable(
                 name: "ProductVariants");
