@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ShoeStoreApp.Migrations
 {
-    public partial class Db1 : Migration
+    public partial class shoesdb1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -225,6 +225,7 @@ namespace ShoeStoreApp.Migrations
                     DeliveryAddressId = table.Column<int>(type: "int", nullable: false),
                     Total = table.Column<long>(type: "bigint", nullable: false),
                     DeliveryFee = table.Column<long>(type: "bigint", nullable: false),
+                    ItemsTotal = table.Column<long>(type: "bigint", nullable: false),
                     TimeCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },

@@ -95,7 +95,8 @@ namespace ShoeStoreApp.Controllers.Admin
                 for (int i = 0; i < color.Length; i++)
                 {
                     var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-                    var fileName = Path.Combine(uploadFolder, Guid.NewGuid().ToString() + Path.GetExtension(file[i].FileName));
+                    var fileNameStore = Guid.NewGuid().ToString();
+                    var fileName = Path.Combine(uploadFolder, fileNameStore + Path.GetExtension(file[i].FileName));
                     using (var fileStream = new FileStream(fileName, FileMode.Create))
                     {
                         file[i].CopyToAsync(fileStream);
@@ -103,7 +104,7 @@ namespace ShoeStoreApp.Controllers.Admin
                     ProductVariant newVarient = new ProductVariant
                     {
                         Color = String.Join("/", color[i]),
-                        ImgPath = fileName,
+                        ImgPath = "images/" + fileNameStore + Path.GetExtension(file[i].FileName),
                         Product = product,
                     };
                     product.Variants.Add(newVarient);
