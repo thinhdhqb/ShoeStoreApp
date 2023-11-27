@@ -236,8 +236,12 @@ namespace ShoeStoreApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ApplicationUserId")
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -249,7 +253,7 @@ namespace ShoeStoreApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("DeliveryAddresses");
                 });
@@ -262,14 +266,13 @@ namespace ShoeStoreApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("DeliveryAddressId")
                         .HasColumnType("int");
 
                     b.Property<long>("DeliveryFee")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ItemsTotal")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Status")
@@ -282,8 +285,6 @@ namespace ShoeStoreApp.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
 
                     b.HasIndex("DeliveryAddressId");
 
@@ -456,26 +457,22 @@ namespace ShoeStoreApp.Migrations
 
             modelBuilder.Entity("ShoeStoreApp.Models.DeliveryAddress", b =>
                 {
-                    b.HasOne("ShoeStoreApp.Models.ApplicationUser", null)
-                        .WithMany("DeliveryAddresses")
-                        .HasForeignKey("ApplicationUserId");
-                });
-
-            modelBuilder.Entity("ShoeStoreApp.Models.Order", b =>
-                {
                     b.HasOne("ShoeStoreApp.Models.ApplicationUser", "Customer")
-                        .WithMany()
+                        .WithMany("DeliveryAddresses")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("ShoeStoreApp.Models.Order", b =>
+                {
                     b.HasOne("ShoeStoreApp.Models.DeliveryAddress", "DeliveryAddress")
                         .WithMany()
                         .HasForeignKey("DeliveryAddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Customer");
 
                     b.Navigation("DeliveryAddress");
                 });

@@ -1,5 +1,5 @@
 ﻿@page
-@model IndexModel
+@model AddressModel
 @{
     ViewData["Title"] = "Địa chỉ";
     ViewData["ActivePage"] = ManageNavPages.Address;
@@ -15,135 +15,135 @@
                   data-bs-toggle="modal"
                   data-bs-target="#add-address-modal"><i class="fa-solid fa-plus"></i> Thêm</span>
         </div>
-        <div class="address-container">
-            <div class="mb-1 fw-bold border border-primary text-primary p-2"
-                 style="width: fit-content">
-                Mặc định
-            </div>
-            <div class="mb-1">
-                <span class="text-secondary">Họ và tên:&emsp;</span>
-                <span>Bùi Quang Thịnh</span>
-            </div>
-            <div class="mb-1">
-                <span class="text-secondary">Điện thoại liên hệ:&emsp;</span>
-                <span>0123456898</span>
-            </div>
-            <div class="mb-1">
-                <span class="text-secondary">Địa chỉ:&emsp;</span>
-                <span>1 Nguyễn Hữu Thọ, Phường Tân Phong, Quận 7, TP HCM</span>
-            </div>
-            <div class="btn-icon text-secondary"
-                 data-bs-toggle="modal"
-                 data-bs-target="#update-address-modal">
-                <i class="fa-solid fa-pen"></i>
-            </div>
-        </div>
-        <div class="address-container">
-            <div class="mb-1">
-                <span class="text-secondary">Họ và tên:&emsp;</span>
-                <span>Bùi Quang Thịnh</span>
-            </div>
-            <div class="mb-1">
-                <span class="text-secondary">Điện thoại liên hệ:&emsp;</span>
-                <span>0123456898</span>
-            </div>
-            <div class="mb-1">
-                <span class="text-secondary">Địa chỉ:&emsp;</span>
-                <span>1 Nguyễn Hữu Thọ, Quận 7, TP HCM</span>
-            </div>
-            <div class="btn-icon text-secondary"
-                 data-bs-toggle="modal"
-                 data-bs-target="#update-address-modal">
-                <i class="fa-solid fa-pen"></i>
-            </div>
-        </div>
+        @foreach (var address in Model.Addresses)
+        {
+            <form class="address-container" asp-page-handler="SetDefaultAddress">
+                <input name="addressId" value="@address.Id" type="hidden"/>
+                <a onclick="this.parentNode.submit(); return false;">
+                    @if (address.IsDefault)
+                    {
+                        <div class="mb-1 fw-bold border border-primary text-primary p-2"
+                             style="width: fit-content">
+                            Mặc định
+                        </div>
+                    }
+                    <div class="mb-1">
+                        <span class="text-secondary">Họ và tên:&emsp;</span>
+                        <span>@address.Name</span>
+                    </div>
+                    <div class="mb-1">
+                        <span class="text-secondary">Điện thoại liên hệ:&emsp;</span>
+                        <span>@address.PhoneNumber</span>
+                    </div>
+                    <div class="mb-1">
+                        <span class="text-secondary">Địa chỉ:&emsp;</span>
+                        <span>@address.Address</span>
+                    </div>
+                    <div class="btn-icon text-secondary"
+                         data-bs-toggle="modal"
+                         data-bs-target="#update-address-modal">
+                        <form method="post" asp-page-handler="DeleteAddress">
+                            <input type="hidden" value="@address.Id" name="addressId" />
+                            <a onclick="this.parentNode.submit(); return false;" class="link-secondary">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </form>
+                    </div>
+                </a>
+
+            </form>
+        }
+
     </div>
 </div>
 
 <div id="add-address-modal" class="modal fade" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <form class="modal-content" method="post">
             <div class="modal-header">
                 <h5 class="modal-title">Thêm địa chỉ mới</h5>
             </div>
             <div class="modal-body">
-                <form>
                     <div class="mb-3 form-floating">
-                        <input type="email"
+                        <input type="text"
                                class="form-control"
                                id="address-name"
+                               asp-for="Input.Name"
+                               required
                                placeholder="" />
                         <label for="profile-name" class="form-label">Họ và tên</label>
+                    <span asp-validation-for="Input.Name" class="text-danger" aria-required="true"></span>
                     </div>
                     <div class="mb-3 form-floating">
                         <input type="text"
                                class="form-control"
                                placeholder=""
+                               asp-for="Input.PhoneNumber"
+                               required
                                id="address-phone" />
                         <label for="address-phone" class="form-label">Số điện thoại</label>
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger" aria-required="true"></span>
                     </div>
                     <div class="mb-3 form-floating">
                         <input type="text"
                                placeholder=""
                                class="form-control"
+                               asp-for="Input.HouseAddress"
+                               required
                                id="address-house" />
                         <label for="profile-phone" class="form-label">Địa chỉ nhà</label>
+                    <span asp-validation-for="Input.HouseAddress" class="text-danger" aria-required="true"></span>
                     </div>
                     <div class="mb-3 row gx-1">
                         <div class="col-4 form-floating">
                             <select class="form-select"
+                                    asp-for="Input.CityAddress" required
                                     id="select-cỉty">
-                                <option selected>
-                                    Chọn tỉnh / thành phố
-                                </option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
                             </select>
                             <label for="select-city" class="form-label">Tỉnh / Thành phố</label>
+                        <span asp-validation-for="Input.CityAddress" class="text-danger" aria-required="true"></span>
                         </div>
                         <div class="col-4 form-floating">
                             <select class="form-select"
+                                    asp-for="Input.DistrictAddress"
+                                    disabled required
                                     id="select-district">
-                                <option selected></option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
                             </select>
                             <label for="select-district"
                                    class="form-label">Quận / Huyện</label>
+                        <span asp-validation-for="Input.DistrictAddress" class="text-danger" aria-required="true"></span>
+
                         </div>
                         <div class="col-4 form-floating">
-                            <select class="form-select"
+                            <select class="form-select" disabled required
+                                    asp-for="Input.WardAddress"
                                     id="select-ward">
-                                <option selected></option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
                             </select>
                             <label for="select-ward" class="form-label">Phường / Xã</label>
+                            <span asp-validation-for="Input.WardAddress" class="text-danger" aria-required="true"></span>
                         </div>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input"
                                type="checkbox"
-                               value=""
+                               asp-for="Input.IsDefault"
                                id="default-address-check" />
                         <label class="form-check-label"
                                for="default-address-check">
                             Đặt làm địa chỉ mặc định
                         </label>
                     </div>
-                </form>
             </div>
             <div class="modal-footer">
                 <a class="link-dark" data-bs-dismiss="modal">Hủy</a>
-                <button type="button" class="btn btn-dark">Thêm</button>
+                <button type="submit" class="btn btn-dark">Thêm</button>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/address.js"></script>
+
 }

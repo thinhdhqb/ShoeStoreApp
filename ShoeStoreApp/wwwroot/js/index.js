@@ -44,3 +44,4 @@ function filter() {
     while (queryString.at(queryString.length - 1) === "&")
         queryString = queryString.substring(0, queryString.length - 1);
     window.location.href = queryString;
+}

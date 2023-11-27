@@ -4,29 +4,34 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ShoeStoreApp.Controllers;
 using ShoeStoreApp.Data;
 using ShoeStoreApp.Models;
 
 namespace ShoeStoreApp.Areas.Identity.Pages.Account.Manage
 {
-    public class Address : PageModel
+    public class AddressModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ShoeStoreAppContext _context;
+        private readonly ILogger<AddressModel> _logger;
 
-        public Address(
+
+        public AddressModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, ShoeStoreAppContext context)
+            SignInManager<ApplicationUser> signInManager, ShoeStoreAppContext context, ILogger<AddressModel> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _logger = logger;
         }
 
         /// <summary>
@@ -35,7 +40,6 @@ namespace ShoeStoreApp.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public string Username { get; set; }
 
-        public List<DeliveryAddress> Addresses { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -48,13 +52,18 @@ namespace ShoeStoreApp.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        [BindProperty]
-        public InputModel Input { get; set; }
+        /// 
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
+        /// 
+        public List<DeliveryAddress> Addresses { get; set; }
+        
+        [BindProperty]
+        public InputModel Input {  get; set; }
+
         public class InputModel
         {
             [Required]
@@ -82,21 +91,20 @@ namespace ShoeStoreApp.Areas.Identity.Pages.Account.Manage
             [Required]
             [Display(Name = "Phường / Xã")]
             public string WardAddress { get; set; }
+
+            [Required]
+            public bool IsDefault { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
             Username = userName;
 
-            Addresses = _context.DeliveryAddresses.ToList();
+            Addresses = _context.DeliveryAddresses.Where(a => a.CustomerId.Equals(user.Id)).ToList();
 
-            Input = new InputModel
-            {
-                PhoneNumber = phoneNumber
-            };
+
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -125,19 +133,76 @@ namespace ShoeStoreApp.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
+            DeliveryAddress address = new DeliveryAddress
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
+                Name = Input.Name,
+                PhoneNumber = Input.PhoneNumber,
+                Address = Input.HouseAddress + ", " + Input.WardAddress + ", " + Input.DistrictAddress + ", " + Input.CityAddress,
+                IsDefault = Input.IsDefault
+            };
+
+            user.DeliveryAddresses.Add(address);
+            if (Input.IsDefault)
+            {
+                var addresses = _context.DeliveryAddresses.ToList();
+                foreach (var a in addresses)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
+                    a.IsDefault = false;
                 }
             }
 
-            await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            _context.DeliveryAddresses.Add(address);
+            _context.SaveChanges();
+
+
+            StatusMessage = "Thêm địa chỉ thành công.";
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostDeleteAddressAsync(int addressId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+
+            var address = _context.DeliveryAddresses.Single(a => a.Id == addressId);
+            if (address == null || !address.CustomerId.Equals(user.Id))
+            {
+                StatusMessage = "Xóa địa chỉ thất bại.";
+                return RedirectToPage();
+            }
+
+
+            _context.DeliveryAddresses.Remove(address);
+            _context.SaveChanges();
+            _logger.LogInformation(addressId.ToString());
+
+            StatusMessage = "Xóa địa chỉ thành công.";
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostSetDefaultAddressAsync(int addressId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+
+            var address = _context.DeliveryAddresses.Single(a => a.Id == addressId);
+            address.IsDefault = true;
+            var addresses = _context.DeliveryAddresses.ToList();
+            foreach (var a in addresses)
+            {
+                if (a.Id != addressId)
+                    a.IsDefault = false;
+            }
+            
+            _context.SaveChanges();
             return RedirectToPage();
         }
     }
