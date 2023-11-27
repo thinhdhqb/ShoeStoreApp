@@ -58,6 +58,7 @@ body {
 
 .card {
     border: none;
+    text-decoration: none;
 }
 
     .card:hover {

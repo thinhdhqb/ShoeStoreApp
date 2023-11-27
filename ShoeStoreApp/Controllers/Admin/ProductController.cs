@@ -99,7 +99,7 @@ namespace ShoeStoreApp.Controllers.Admin
                     var fileName = Path.Combine(uploadFolder, fileNameStore + Path.GetExtension(file[i].FileName));
                     using (var fileStream = new FileStream(fileName, FileMode.Create))
                     {
-                        file[i].CopyToAsync(fileStream);
+                        await file[i].CopyToAsync(fileStream);
                     }
                     ProductVariant newVarient = new ProductVariant
                     {

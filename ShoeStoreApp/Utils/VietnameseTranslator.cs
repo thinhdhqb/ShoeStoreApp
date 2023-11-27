@@ -4,24 +4,31 @@
     {
         Dictionary<String, String> _dict;
         public VietnameseTranslator() { 
-            _dict = new Dictionary<String, String>();
-            _dict.Add("men", "nam");
-            _dict.Add("women", "nữ");
-            _dict.Add("unisex", "unisex");
-            _dict.Add("basketball", "bóng rổ");
-            _dict.Add("football", "bóng rổ");
-            _dict.Add("black", "đen");
-            _dict.Add("white", "trắng");
-            _dict.Add("orange", "cam");
-            _dict.Add("pink", "hồng");
-            _dict.Add("red", "đỏ");
-            _dict.Add("gray", "xám");
-            _dict.Add("blue", "xanh dương");
-            _dict.Add("green", "xanh lục");
+            _dict = new Dictionary<String, String>
+            {
+                { "men", "nam" },
+                { "women", "nữ" },
+                { "unisex", "unisex" },
+                { "basketball", "bóng rổ" },
+                { "sneaker", "sneaker" },
+                { "football", "bóng đá" },
+                { "black", "đen" },
+                { "white", "trắng" },
+                { "orange", "cam" },
+                { "pink", "hồng" },
+                { "red", "đỏ" },
+                { "gray", "xám" },
+                { "blue", "xanh dương" },
+                { "green", "xanh lục" }
+            };
         }
         public string Translate(string word)
         {
-            return _dict[word];
+            if (_dict.ContainsKey(word))
+            {
+                return _dict[word];
+            }
+            return word;
         }
     }
 }
