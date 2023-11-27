@@ -1,22 +1,39 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoeStoreApp.Models;
 using System.Diagnostics;
+using ShoeStoreApp.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ShoeStoreApp.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ShoeStoreAppContext _context;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ShoeStoreAppContext context, ILogger<HomeController> logger)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var products = _context.Products.Include(p => p.Variants).ToList();
+            return View(products);
         }
+
+        public IActionResult Detail(int id)
+        {
+            var product = _context.Products.Find(id);
+            if (product == null)
+            {
+                RedirectToAction("Error");
+            }
+            return View(product);
+        }
+
 
         public IActionResult Privacy()
         {

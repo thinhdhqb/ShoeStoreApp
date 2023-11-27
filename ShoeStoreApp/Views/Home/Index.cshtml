@@ -238,7 +238,8 @@
                 <!-- Product -->
                 @foreach(var product in Model)
                 {
-                    <div class="card col-4">
+                    @product.Id
+                    <a class="card col-4" asp-route="/Detail/@product.Id">
                         <div class="card-img-top">
                             <img class="display-img"
                                  src="@product.Variants.ElementAt(0).ImgPath"
@@ -247,83 +248,20 @@
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">@product.Name</h5>
-                            <div class="card-text text-secondary">Giày @translator.Translate(product.Category) </div>
-                            <div class="card-text text-secondary" th:text="${product.variants.size() + ' màu'}"></div>
+                            <div class="card-text text-secondary">Giày @translator.Translate(product.Category) @translator.Translate(product.Gender)</div>
+                            <div class="card-text text-secondary">@product.Variants.Count màu</div>
                             <div class="color-container">
-                                <div th:each="variant : ${product.variants}" class="img-container hidden variant">
-                                    <img th:src="${variant.getImgPath()}" alt="">
-                                </div>
+                                @foreach(var color in product.Variants)
+                                {
+                                    <div class="img-container hidden variant">
+                                        <img src="@color.ImgPath" alt="">
+                                    </div>
+                                }
                             </div>
-                            <b th:text="${#numbers.formatDecimal(product.price, 1, 'DEFAULT', 0, 'DEFAULT') + '₫'}" class="card-text price">3,239,000₫</b>
+                            <b class="card-text price">@CurrencyFormat.Format(product.Price)</b>
                         </div>
-                    </div>
+                    </a>
                 }
-
-                <div class="card col-4">
-                    <img src="images/sample.png"
-                         class="card-img-top"
-                         alt="..." />
-                    <div class="card-body">
-                        <h5 class="card-title">Nike Air Max 270</h5>
-                        <div class="color-container">
-                            <div class="img-container hidden">
-                                <img src="images/sample.png" alt="" />
-                            </div>
-                            <div class="img-container hidden">
-                                <img src="images/sample.png" alt="" />
-                            </div>
-                            <div class="img-container hidden">
-                                <img src="images/sample.png" alt="" />
-                            </div>
-                            <div class="img-container hidden">
-                                <img src="images/sample.png" alt="" />
-                            </div>
-                        </div>
-                        <div class="card-text text-secondary">
-                            Women's shoes
-                        </div>
-                        <b class="card-text price">3,239,000₫</b>
-                    </div>
-                </div>
-                <!-- Product -->
-                <div class="card col-4">
-                    <img src="images/sample.png"
-                         class="card-img-top"
-                         alt="..." />
-                    <div class="card-body">
-                        <h5 class="card-title">Nike Air Max 270</h5>
-                        <div class="card-text text-secondary">
-                            Women's shoes
-                        </div>
-                        <b class="card-text price">3,239,000₫</b>
-                    </div>
-                </div>
-                <!-- Product -->
-                <div class="card col-4">
-                    <img src="images/sample.png"
-                         class="card-img-top"
-                         alt="..." />
-                    <div class="card-body">
-                        <h5 class="card-title">Nike Air Max 270</h5>
-                        <div class="card-text text-secondary">
-                            Women's shoes
-                        </div>
-                        <b class="card-text price">3,239,000₫</b>
-                    </div>
-                </div>
-                <!-- Product -->
-                <div class="card col-4">
-                    <img src="images/sample.png"
-                         class="card-img-top"
-                         alt="..." />
-                    <div class="card-body">
-                        <h5 class="card-title">Nike Air Max 270</h5>
-                        <div class="card-text text-secondary">
-                            Women's shoes
-                        </div>
-                        <b class="card-text price">3,239,000₫</b>
-                    </div>
-                </div>
             </div>
         </div>
         <!-- Product list -->
