@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Order";
 }
-
+@model ShoeStoreApp.Controllers.Admin.OrderCombine
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -135,27 +135,48 @@
             <th></th>
             <th>Id</th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["StatusSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Email</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["StatusSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Trạng thái</a>
             </th>
-            <th>Tên khách hàng</th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameCustomerSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Tên khách hàng</a>
+            </th>
 			<th>Địa chỉ giao</th>
-            <th>Thành tiền</th>
-            <th>Ngày tạo</th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["TotalSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Tổng tiền</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Ngày tạo</a>
+            </th>
             <th>Sản phẩm</th>
             <th></th>
             </thead>
             <tbody class="table-group-divider">
-                <tr>
+                @foreach (Order order in Model.PaginatedListOrder)
+                {
+                    <tr>
                     <td>
                         <input class="form-check-input" type="checkbox" />
                     </td>
-                    <td>1</td>
-                    <td><div class="status status-pending">CHỜ XÁC NHẬN</div></td>
-                    <td>Nguyễn Văn A</td>
-                    <td class="text-truncate" style="max-width: 1px">1 Nguyễn Hữu Thọ, Quận 7, TP HCM</td>
-                    <td>3,239,000₫</td>
+                    <td>@order.Id</td>
+                        @if (order.Status == OrderStatusCode.SUCCESS)
+                        {
+                            <td><div class="status status-done">ĐÃ HOÀN THÀNH</div></td>
+                        } else if (order.Status == OrderStatusCode.PENDING)
+                        {
+                            <td><div class="status status-pending">CHỜ XÁC NHẬN</div></td>
+                        } else if (order.Status == OrderStatusCode.DELIVERING){
+                            <td><div class="status status-delivering">ĐANG VẬN CHUYỂN</div></td>
+                        }
+                        else {
+                            <td><div class="status status-cancelled">ĐÃ HỦY</div></td>
+                        }
+                    <td>@order.DeliveryAddress.Name</td>
+                    <td class="text-truncate" style="max-width: 1px">
+                        @order.DeliveryAddress.Address
+                    </td>
+                        <td> @order.Total.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))</td>
                     <td>
-                        12:30:03 24/11/2003
+                        @order.TimeCreated
                     </td>
                     <td>
                         x1 Nike Air Max 270 - Trắng - 40
@@ -168,91 +189,23 @@
                         </span>
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <input class="form-check-input" type="checkbox" />
-                    </td>
-                    <td>1</td>
-                    <td><div class="status status-cancelled">ĐÃ HỦY</div></td>
-                    <td>Nguyễn Văn A</td>
-                    <td class="text-truncate" style="max-width: 1px">1 Nguyễn Hữu Thọ, Quận 7, TP HCM</td>
-                    <td>3,239,000₫</td>
-                    <td>
-                        12:30:03 24/11/2003
-                    </td>
-                    <td>
-                        x1 Nike Air Max 270 - Trắng - 40
-                        <br>
-                        x1 Nike Air Max 270 - Trắng - 40
-                    </td>
-                    <td>
-                        <span class="btn-delete">
-                            <i class="bi bi-trash-fill"></i>
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input class="form-check-input" type="checkbox" />
-                    </td>
-                    <td>1</td>
-                    <td><div class="status status-done">ĐÃ HOÀN THÀNH</div></td>
-                    <td>Nguyễn Văn A</td>
-                    <td class="text-truncate" style="max-width: 1px">1 Nguyễn Hữu Thọ, Quận 7, TP HCM</td>
-                    <td>3,239,000₫</td>
-                    <td>
-                        12:30:03 24/11/2003
-                    </td>
-                    <td>
-                        x1 Nike Air Max 270 - Trắng - 40
-                        <br>
-                        x1 Nike Air Max 270 - Trắng - 40
-                    </td>
-                    <td>
-                        <span class="btn-delete">
-                            <i class="bi bi-trash-fill"></i>
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input class="form-check-input" type="checkbox" />
-                    </td>
-                    <td>1</td>
-                    <td><div class="status status-delivering">ĐANG VẬN CHUYỂN</div></td>
-                    <td>Nguyễn Văn A</td>
-                    <td class="text-truncate" style="max-width: 1px">1 Nguyễn Hữu Thọ, Quận 7, TP HCM</td>
-                    <td>3,239,000₫</td>
-                    <td>
-                        12:30:03 24/11/2003
-                    </td>
-                    <td>
-                        x1 Nike Air Max 270 - Trắng - 40
-                        <br>
-                        x1 Nike Air Max 270 - Trắng - 40
-                    </td>
-                    <td>
-                        <span class="btn-delete">
-                            <i class="bi bi-trash-fill"></i>
-                        </span>
-                    </td>
-                </tr>
+                }
             </tbody>
         </table>
         @{
-            var prevDisabled = !Model.PaginatedListCustomer.HasPreviousPage ? "disabled" : "";
-            var nextDisabled = !Model.PaginatedListCustomer.HasNextPage ? "disabled" : "";
+            var prevDisabled = !Model.PaginatedListOrder.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.PaginatedListOrder.HasNextPage ? "disabled" : "";
         }
         <nav class="d-flex">
             <div class="info text-secondary me-auto">
-                Hiển thị @(Model.PaginatedListCustomer.PageIndex) - @(Model.PaginatedListCustomer.PageIndex * 10) của
-                @(Model.PaginatedListCustomer.Count) sản phẩm
+                Hiển thị @(Model.PaginatedListOrder.PageIndex) - @(Model.PaginatedListOrder.PageIndex * 10) của
+                @(Model.PaginatedListOrder.Count) hóa đơn
             </div>
             <ul class="pagination">
                 <li class="page-item">
                     <a asp-action="Index"
                        asp-route-sortOrder="@ViewData["CurrentSort"]"
-                       asp-route-pageNumber="@(Model.PaginatedListCustomer.PageIndex - 1)"
+                       asp-route-pageNumber="@(Model.PaginatedListOrder.PageIndex - 1)"
                        asp-route-currentFilter="@ViewData["CurrentFilter"]"
                        class="page-link @prevDisabled">
                         <span aria-hidden="true">&laquo;</span>
@@ -261,7 +214,7 @@
                 <li class="page-item">
                     <a asp-action="Index"
                        asp-route-sortOrder="@ViewData["CurrentSort"]"
-                       asp-route-pageNumber="@(Model.PaginatedListCustomer.PageIndex + 1)"
+                       asp-route-pageNumber="@(Model.PaginatedListOrder.PageIndex + 1)"
                        asp-route-currentFilter="@ViewData["CurrentFilter"]"
                        class="page-link @nextDisabled">
                         <span aria-hidden="true">&raquo;</span>

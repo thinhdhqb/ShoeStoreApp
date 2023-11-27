@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ShoeStoreApp.Data;
 using ShoeStoreApp.Models;
 
 namespace ShoeStoreApp.Controllers.Admin
@@ -7,6 +9,14 @@ namespace ShoeStoreApp.Controllers.Admin
     [Route("admin/[controller]")]
     public class OrderController : Controller
     {
+        private readonly ILogger<HomeController> _logger;
+        private ShoeStoreAppContext _context;
+
+        public OrderController(ILogger<HomeController> logger, ShoeStoreAppContext context)
+        {
+            _logger = logger;
+            _context = context;
+        }
         public async Task<IActionResult> Index(string sortOrder,
             string currentFilter,
             string searchString,
@@ -15,10 +25,9 @@ namespace ShoeStoreApp.Controllers.Admin
             ViewData["CurrentSort"] = sortOrder;
             ViewData["StatusSortParm"] = sortOrder == "status_asc" ? "status_desc" : "status_asc";
             ViewData["NameCustomerSortParm"] = sortOrder == "customerName_asc" ? "customerName_desc" : "customerName_asc";
-			ViewData["AddressSortParm"] = sortOrder == "address_asc" ? "address_desc" : "address_asc";
-			ViewData["MoneySortParm"] = sortOrder == "money_asc" ? "money_desc" : "money_asc";
-			ViewData["DateSortParm"] = sortOrder == "date_asc" ? "date_desc" : "date_asc";
-			if (searchString != null)
+            ViewData["TotalSortParm"] = sortOrder == "money_asc" ? "money_desc" : "money_asc";
+            ViewData["DateSortParm"] = sortOrder == "date_asc" ? "date_desc" : "date_asc";
+            if (searchString != null)
             {
                 pageNumber = 1;
             }
@@ -27,27 +36,51 @@ namespace ShoeStoreApp.Controllers.Admin
                 searchString = currentFilter;
             }
             ViewData["CurrentFilter"] = searchString;
-            var listOrder = .Users;
+            var orderList = from s in _context.Orders select s;
             if (!String.IsNullOrEmpty(searchString))
             {
-                listUser = listUser.Where(s => s.Email.Contains(searchString));
+                orderList = orderList.Include(c => c.DeliveryAddress).Where(
+                    s => s.TimeCreated.ToString().Contains(searchString) ||
+                    s.DeliveryAddress.Name.Contains(searchString));
             }
             switch (sortOrder)
             {
-                case "email_desc":
-                    listUser = listUser.OrderByDescending(s => s.Email); break;
-                case "email_asc":
-                    listUser = listUser.OrderBy(s => s.Email); break;
                 case "status_asc":
-                    listUser = listUser.OrderBy(s => s.EmailConfirmed); break;
-                case "status_desc":
-                    listUser = listUser.OrderByDescending(s => s.EmailConfirmed); break;
+                    orderList = orderList.Include(c => c.DeliveryAddress).OrderBy(e => e.Status);
+                    break;
+                case "satus_desc":
+                    orderList = orderList.Include(c => c.DeliveryAddress).OrderByDescending(e => e.Status);
+                    break;
+                case "customerName_asc":
+                    orderList = orderList.Include(c => c.DeliveryAddress).OrderBy(e => e.DeliveryAddress.Name);
+                    break;
+                case "customerName_desc":
+                    orderList = orderList.Include(c => c.DeliveryAddress).OrderByDescending(e => e.DeliveryAddress.Name);
+                    break;
+                case "money_asc":
+                    orderList = orderList.Include(c => c.DeliveryAddress).OrderBy(e => e.Total);
+                    break;
+                case "money_desc":
+                    orderList = orderList.Include(c => c.DeliveryAddress).OrderByDescending(e => e.Total);
+                    break;
+                case "date_asc":
+                    orderList = orderList.Include(c => c.DeliveryAddress).OrderBy(e => e.TimeCreated);
+                    break;
+                case "date_desc":
+                    orderList = orderList.Include(c => c.DeliveryAddress).OrderByDescending(e => e.TimeCreated);
+                    break;
+
             }
             int pageSize = 10;
-            CombineCustomer combine = new CombineCustomer();
-            var paginatedCustomer = await PaginatedList<ApplicationUser>.CreateAsync(listUser, pageNumber ?? 1, pageSize);
-            combine.PaginatedListCustomer = paginatedCustomer;
-            return PartialView("~/Views/Admin/Customer.cshtml", combine);
+            OrderCombine combine = new OrderCombine();
+            var paginatedOrder = await PaginatedList<Order>.CreateAsync(orderList, pageNumber ?? 1, pageSize);
+            combine.PaginatedListOrder = paginatedOrder;
+            //get all order item 
+            return PartialView("~/Views/Admin/Order.cshtml", combine);
         }
+    }
+    public class OrderCombine{
+        public PaginatedList<Order> PaginatedListOrder { get;set; }
+        
     }
 }
