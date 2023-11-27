@@ -1,13 +1,104 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using NuGet.Versioning;
+using ShoeStoreApp.Models;
+using System.Drawing.Printing;
 
 namespace ShoeStoreApp.Controllers.Admin
 {
     [Route("admin/[controller]")]
     public class CustomerController : Controller
     {
-        public IActionResult Index()
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<HomeController> _logger;
+        public CustomerController(ILogger<HomeController> logger, UserManager<ApplicationUser> userManager)
         {
-            return PartialView("~/Views/Admin/Customer.cshtml");
+            _userManager = userManager;
+            _logger = logger;
         }
+        public async Task<IActionResult> Index(string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
+        {
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["EmailSortParm"] = sortOrder == "email_asc" ? "email_desc" : "email_asc";
+            ViewData["StatusSortParm"] = sortOrder == "status_asc" ? "status_desc" : "status_asc";
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewData["CurrentFilter"] = searchString;
+            var listUser = _userManager.Users;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                listUser = listUser.Where(s => s.Email.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "email_desc":
+                    listUser = listUser.OrderByDescending(s=>s.Email); break;
+                case "email_asc":
+                    listUser = listUser.OrderBy(s=>s.Email); break;
+                case "status_asc":
+                    listUser = listUser.OrderBy(s=>s.EmailConfirmed); break;
+                case "status_desc":
+                    listUser = listUser.OrderByDescending(s => s.EmailConfirmed); break;
+            }
+            int pageSize = 10;
+            CombineCustomer combine = new CombineCustomer();
+            var paginatedCustomer = await PaginatedList<ApplicationUser>.CreateAsync(listUser, pageNumber ?? 1, pageSize);
+            combine.PaginatedListCustomer = paginatedCustomer;
+            return PartialView("~/Views/Admin/Customer.cshtml", combine);
+        }
+        [HttpPost]
+        [Route("/DeleteCustomer/{id}", Name = "DeleteCustomer")]
+        public async Task<IActionResult> DeleteCustomer([FromRoute] string id)
+        {
+            
+            var listUser = _userManager.Users;
+            ApplicationUser userFind = new ApplicationUser();
+            foreach(var user in listUser)
+            {
+                if (user.Id.Equals(id))
+                {
+                    userFind = user; break;
+                }
+            }
+            await _userManager.DeleteAsync(userFind);
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        [Route("/DeleteCustomers", Name = "DeleteCustomers")]
+        public async Task<IActionResult> DeleteCustomers(string productSelectedIds)
+        {
+            string[] productIds = productSelectedIds.Split(',');
+            foreach (string id in productIds)
+            {
+                var listUser = _userManager.Users;
+                ApplicationUser userFind = new ApplicationUser();
+                foreach (var user in listUser)
+                {
+                    if (user.Id.Equals(id))
+                    {
+                        userFind = user; 
+                        break;
+                    }
+                }
+                await _userManager.DeleteAsync(userFind);
+                
+            }
+            return RedirectToAction("Index");
+        }
+    }
+    public class CombineCustomer
+    {
+        public PaginatedList<ApplicationUser> PaginatedListCustomer { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Drawing;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Drawing.Printing;
 
 namespace ShoeStoreApp.Controllers.Admin
 {
@@ -20,23 +21,69 @@ namespace ShoeStoreApp.Controllers.Admin
         public ProductController(ILogger<HomeController> logger, ShoeStoreAppContext context)
         {
             _logger = logger;
-            _context = context;
+            _context = context; 
         }
         public async Task<IActionResult> Index(string sortOrder,
             string currentFilter,
             string searchString,
             int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewData["BrandSortParm"] = sortOrder == "brand_asc" ? "brand_desc" : "brand_asc";
+            ViewData["GenderSortParm"] = sortOrder == "gender_asc" ? "gender_desc" : "gender_asc";
+            ViewData["CategorySortParm"] = sortOrder == "category_asc" ? "category_desc" : "category_asc";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewData["CurrentFilter"] = searchString;
+            var productList = from s in _context.Products select s;
             List<Product> products = _context.Products.ToList();
-            //ViewData["Products"] = products; 
             Combine combine = new Combine();
             combine.Products = products;
-            var productList = _context.Products;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                productList = _context.Products.Where(s => s.Name.Contains(searchString)); 
+            }
+            switch (sortOrder)
+            {
+                case "price_desc":
+                    productList = productList.OrderByDescending(s => s.Price);
+                    break;
+                case "Price":
+                    productList = productList.OrderBy(s => s.Price);
+                    break;
+                case "brand_asc":
+                    productList = productList.OrderBy(s =>s.Brand);
+                    break;
+                case "brand_desc":
+                    productList = productList.OrderByDescending(s => s.Brand);
+                    break;
+                case "gender_asc":
+                    productList = productList.OrderBy(s => s.Gender);
+                    break;
+                case "gender_desc":
+                    productList = productList.OrderByDescending(s => s.Gender);
+                    break;
+                case "category_asc":
+                    productList = productList.OrderBy(s => s.Category);
+                    break;
+                case "category_desc":
+                    productList = productList.OrderByDescending(s => s.Category);
+                    break;
+            }
             int pageSize = 10;
             var paginatedProducts = await PaginatedList<Product>.CreateAsync(productList, pageNumber ?? 1, pageSize);
             combine.PaginatedListProduct = paginatedProducts;
             return PartialView("~/Views/Admin/Product.cshtml", combine);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("/AddProduct", Name = "AddProduct")]
@@ -63,9 +110,50 @@ namespace ShoeStoreApp.Controllers.Admin
                 }
                 _context.Products.Add(product);
                 _context.SaveChanges();
+                List<ProductVariant> variants = product.Variants.ToList();
+                foreach (ProductVariant variant in variants)
+                {
+                    for (int j = 36; j <= 45; j++)
+                    {
+                        ProductVariantItem newVariantItem = new ProductVariantItem
+                        {
+                            Size = j.ToString(),
+                            StockQuantity = 10,
+                            ProductVariantId = variant.Id
+                        };
+                        _context.ProductVariantItems.Add(newVariantItem);
+                        _context.SaveChanges();
+                    }
+                }
             }
             
             return RedirectToAction("Index");   
+        }
+        [HttpPost]
+        [Route("/DeleteProduct/{id}", Name = "DeleteProduct")]
+        public async Task<IActionResult> DeleteProduct([FromRoute] int id)
+        {
+            Product product = _context.Products.Find(id);
+            if (product!=null)
+            {
+                _context.Products.Remove(product);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        [Route("/DeleteProducts", Name = "DeleteProducts")]
+        public async Task<IActionResult> DeleteProducts(string productSelectedIds)
+        {
+            string[] productIds = productSelectedIds.Split(',');
+            int[] intProductIds = productIds.Select(int.Parse).ToArray();
+            foreach(int id in intProductIds)
+            {
+                _context.Products.Remove(_context.Products.Find(id));
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
         }
     }
     public class Combine
@@ -74,7 +162,6 @@ namespace ShoeStoreApp.Controllers.Admin
         public Product Product { get; set; }
         public PaginatedList<Product> PaginatedListProduct { get; set; }
     }
-
     public class PaginatedList<T> : List<T>
     {
         public int PageIndex { get; private set; }

@@ -24,7 +24,6 @@
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/admin.css" />
     <link rel="stylesheet" href="~/css/admin-order.css" />
-
     <title>Order checkout complete!</title>
 </head>
 <body>
@@ -235,6 +234,36 @@
                 </tr>
             </tbody>
         </table>
+        @{
+            var prevDisabled = !Model.PaginatedListCustomer.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.PaginatedListCustomer.HasNextPage ? "disabled" : "";
+        }
+        <nav class="d-flex">
+            <div class="info text-secondary me-auto">
+                Hiển thị @(Model.PaginatedListCustomer.PageIndex) - @(Model.PaginatedListCustomer.PageIndex * 10) của
+                @(Model.PaginatedListCustomer.Count) sản phẩm
+            </div>
+            <ul class="pagination">
+                <li class="page-item">
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["CurrentSort"]"
+                       asp-route-pageNumber="@(Model.PaginatedListCustomer.PageIndex - 1)"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       class="page-link @prevDisabled">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["CurrentSort"]"
+                       asp-route-pageNumber="@(Model.PaginatedListCustomer.PageIndex + 1)"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       class="page-link @nextDisabled">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
         <nav class="d-flex">
             <div class="info text-secondary me-auto">
                 Hiển thị 1-10 của 100 sản phẩm

@@ -100,18 +100,25 @@
             </div>
         </div>
         <div class="d-flex nav-option mb-3">
-            <input type="text"
-                   name=""
+            <form asp-action="Index" method="get" class="d-flex w-100">
+                <input type="text"
+                       name="SearchString"
+                       value="@ViewData["CurrentFilter"]"
                    id=""
-                   class="form-control w-75"
+                   class="form-control w-100"
                    placeholder="Tìm kiếm theo id, tên, hãng, ..." />
-            <button class="btn btn-dark" id="btn-search">Tìm kiếm</button>
+            <button type="submit" class="btn btn-dark" id="btn-search">Tìm kiếm</button>
+            </form>
+            
             <button class="btn btn-outline-dark"
                     data-bs-toggle="modal"
                     data-bs-target="#add-product-modal">
                 Thêm sản phẩm
             </button>
-            <button class="btn btn-dark">Xóa sản phẩm</button>
+            <form asp-action="DeleteProducts" method="post" id="formDeleteProducts">
+                <input type="hidden" name="productSelectedIds" id="productSelectedIds" />
+                <button type="submit" id="deleteButton" class="btn btn-dark h-100">Xóa sản phẩm</button>
+            </form>
         </div>
         <table class="table table-hover w-100 align-middle">
             <colgroup>
@@ -125,16 +132,23 @@
                 <col span="1" style="width: 0%; min-width: 200px" />
                 <col span="1" style="width: 0%; min-width: 100px" />
             </colgroup>
-
             <thead class="text-uppercase">
             <th></th>
             <th>Id</th>
             <th>Tên</th>
-            <th>Hãng</th>
-            <th>Giá</th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["BrandSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Hãng</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Giá</a>
+            </th>
             <th>Mô tả</th>
-            <th>Giới tính</th>
-            <th>Phân loại</th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["GenderSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Giới tính</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CategorySortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Phân loại</a>
+            </th>   
             <th></th>
             </thead>
             <tbody class="table-group-divider">
@@ -157,9 +171,11 @@
                             <span class="btn-edit me-3">
                                 <i class="bi bi-pencil-fill"></i>
                             </span>
-                            <span class="btn-delete">
-                                <i class="bi bi-trash-fill"></i>
-                            </span>
+                            <form asp-action="DeleteProduct" class="d-inline-block" asp-route-id="@product.Id" method="post">
+                                <a onclick="this.parentNode.submit();return false;" class="btn-delete" type="submit">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            </form>
                         </td>
                     </tr>
                 }
@@ -171,11 +187,10 @@
             var nextDisabled = !Model.PaginatedListProduct.HasNextPage ? "disabled" : "";
         }
 
-
-        
         <nav class="d-flex">
             <div class="info text-secondary me-auto">
-                Hiển thị 1-10 của 100 sản phẩm
+                Hiển thị @(Model.PaginatedListProduct.PageIndex) - @(Model.PaginatedListProduct.PageIndex*10) của 
+                @(Model.PaginatedListProduct.Count) sản phẩm
             </div>
             <ul class="pagination">
                 <li class="page-item">
@@ -183,6 +198,7 @@
                        asp-route-sortOrder="@ViewData["CurrentSort"]"
                        asp-route-pageNumber="@(Model.PaginatedListProduct.PageIndex - 1)"
                        asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       
                        class="page-link @prevDisabled">
                         <span aria-hidden="true">&laquo;</span>
                     </a>

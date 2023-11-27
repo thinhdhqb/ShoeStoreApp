@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Customer";
 }
+@model ShoeStoreApp.Controllers.Admin.CombineCustomer
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -129,15 +130,19 @@
                 </div>
             </div>
             <div class="d-flex nav-option mb-3">
-                <input
-                    type="text"
-                    name=""
-                    id=""
-                    class="form-control w-75"
-                    placeholder="Tìm kiếm theo id, tên, hãng, ..."
-                />
-                <button class="btn btn-dark" id="btn-search">Tìm kiếm</button>
-                <button class="btn btn-dark">Xóa khách hàng</button>
+                <form asp-action="Index" method="get" class="d-flex w-100">
+                    <input type="text"
+                           name="SearchString"
+                           value="@ViewData["CurrentFilter"]"
+                           id=""
+                           class="form-control w-100"
+                           placeholder="Tìm kiếm theo email" />
+                    <button type="submit" class="btn btn-dark" id="btn-search">Tìm kiếm</button>
+                </form>
+                <form asp-action="DeleteCustomers" method="post" id="formDeleteProducts">
+                    <input type="hidden" name="productSelectedIds" id="productSelectedIds" />
+                    <button type="submit" id="deleteButton" class="btn btn-dark h-100">Xóa khách hàng</button>
+                </form>
             </div>
             <table class="table table-hover w-100 align-middle">
                 <colgroup>
@@ -149,139 +154,88 @@
 
                 <thead class="text-uppercase">
                     <th></th>
-                    <th>Id</th>
-                    <th>Tên</th>
-                    <th>Số điện thoại</th>
-                    <th>Email</th>
+                    <th>STT</th>
+                    <th>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["EmailSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Email</a>
+                    </th>
+                    <th>
+                        Số điện thoại
+                    </th>
+                    <th>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["StatusSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Trạng thái</a>
+                    </th>
                     <th></th>
                 </thead>
                 <tbody class="table-group-divider">
-                    <tr>
-                        <td>
-                            <input class="form-check-input" type="checkbox" />
-                        </td>
-                        <td>1</td>
-                        <td>Nguyễn Văn A</td>
-                        <td>012345667</td>
-                        <td>a@gmail.com</td>
-                        <td>
-                            <span class="btn-edit me-3">
-                                <i class="bi bi-pencil-fill"></i>
-                            </span>
-                            <span class="btn-delete">
-                                <i class="bi bi-trash-fill"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input class="form-check-input" type="checkbox" />
-                        </td>
-                        <td>1</td>
-                        <td>Nguyễn Văn A</td>
-                        <td>012345667</td>
-                        <td>a@gmail.com</td>
-                        <td>
-                            <span class="btn-edit me-3">
-                                <i class="bi bi-pencil-fill"></i>
-                            </span>
-                            <span class="btn-delete">
-                                <i class="bi bi-trash-fill"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input class="form-check-input" type="checkbox" />
-                        </td>
-                        <td>1</td>
-                        <td>Nguyễn Văn A</td>
-                        <td>012345667</td>
-                        <td>a@gmail.com</td>
-                        <td>
-                            <span class="btn-edit me-3">
-                                <i class="bi bi-pencil-fill"></i>
-                            </span>
-                            <span class="btn-delete">
-                                <i class="bi bi-trash-fill"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input class="form-check-input" type="checkbox" />
-                        </td>
-                        <td>1</td>
-                        <td>Nguyễn Văn A</td>
-                        <td>012345667</td>
-                        <td>a@gmail.com</td>
-                        <td>
-                            <span class="btn-edit me-3">
-                                <i class="bi bi-pencil-fill"></i>
-                            </span>
-                            <span class="btn-delete">
-                                <i class="bi bi-trash-fill"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input class="form-check-input" type="checkbox" />
-                        </td>
-                        <td>1</td>
-                        <td>Nguyễn Văn A</td>
-                        <td>012345667</td>
-                        <td>a@gmail.com</td>
-                        <td>
-                            <span class="btn-edit me-3">
-                                <i class="bi bi-pencil-fill"></i>
-                            </span>
-                            <span class="btn-delete">
-                                <i class="bi bi-trash-fill"></i>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input class="form-check-input" type="checkbox" />
-                        </td>
-                        <td>1</td>
-                        <td>Nguyễn Văn A</td>
-                        <td>012345667</td>
-                        <td>a@gmail.com</td>
-                        <td>
-                            <span class="btn-edit me-3">
-                                <i class="bi bi-pencil-fill"></i>
-                            </span>
-                            <span class="btn-delete">
-                                <i class="bi bi-trash-fill"></i>
-                            </span>
-                        </td>
-                    </tr>
+                    @{
+                        int index = 0;
+                    }
+                    @foreach(ApplicationUser item in Model.PaginatedListCustomer)
+                    {
+                        <tr>
 
+                            <td>
+                                <input class="form-check-input" type="checkbox" />
+                            </td>
+                            <td style="display:none">@item.Id</td>
+                            <td>@(index+1)</td>
+                            <td>@item.Email</td>
+                            @if (item.PhoneNumber != null)
+                            {
+                                <td>@item.PhoneNumber</td>
+                            }
+                            else
+                            {
+                                <td> - </td>
+                            }
+                            @if (item.EmailConfirmed)
+                            {
+                                <td> Đã xác nhận </td>
+                            }
+                            else
+                            {
+                                <td> Chờ xác nhận </td>
+                            }
+                            <td>
+                                <span class="btn-edit me-3">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </span>
+                                <form asp-action="DeleteCustomer" class="d-inline-block" asp-route-id="@item.Id" method="post">
+                                    <a onclick="this.parentNode.submit();return false;" class="btn-delete" type="submit">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                </form>
+                            </td>
+                        </tr>
+                        index++;
+                    }
                 </tbody>
             </table>
+            @{
+                var prevDisabled = !Model.PaginatedListCustomer.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.PaginatedListCustomer.HasNextPage ? "disabled" : "";
+            }
             <nav class="d-flex">
                 <div class="info text-secondary me-auto">
-                    Hiển thị 1-10 của 100 sản phẩm
+                    Hiển thị @(Model.PaginatedListCustomer.PageIndex) - @(Model.PaginatedListCustomer.PageIndex * 10) của
+                    @(Model.PaginatedListCustomer.Count) sản phẩm
                 </div>
                 <ul class="pagination">
                     <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
+                        <a asp-action="Index"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]"
+                           asp-route-pageNumber="@(Model.PaginatedListCustomer.PageIndex - 1)"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           class="page-link @prevDisabled">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li class="page-item active">
-                        <a class="page-link" href="#">1</a>
-                    </li>
                     <li class="page-item">
-                        <a class="page-link" href="#">2</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">3</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
+                        <a asp-action="Index"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]"
+                       asp-route-pageNumber="@(Model.PaginatedListCustomer.PageIndex + 1)"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           class="page-link @nextDisabled">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -680,7 +634,7 @@
         integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
         crossorigin="anonymous"
     ></script>
-    <script src="~/js/admin.js"></script>
+    <script src="~/js/admin-customer.js"></script>
 </html>
 
 
