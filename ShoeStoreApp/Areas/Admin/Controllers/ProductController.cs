@@ -9,10 +9,11 @@ using System.Collections;
 using System.Drawing;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Drawing.Printing;
+using Microsoft.IdentityModel.Logging;
 
-namespace ShoeStoreApp.Controllers.Admin
+namespace ShoeStoreApp.Areas.Admin.Controllers
 {
-    [Route("admin/[controller]")]
+    [Area("Admin")]
     public class ProductController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -21,7 +22,7 @@ namespace ShoeStoreApp.Controllers.Admin
         public ProductController(ILogger<HomeController> logger, ShoeStoreAppContext context)
         {
             _logger = logger;
-            _context = context; 
+            _context = context;
         }
         public async Task<IActionResult> Index(string sortOrder,
             string currentFilter,
@@ -49,7 +50,7 @@ namespace ShoeStoreApp.Controllers.Admin
             combine.Products = products;
             if (!String.IsNullOrEmpty(searchString))
             {
-                productList = _context.Products.Where(s => s.Name.Contains(searchString)); 
+                productList = _context.Products.Where(s => s.Name.Contains(searchString));
             }
             switch (sortOrder)
             {
@@ -60,7 +61,7 @@ namespace ShoeStoreApp.Controllers.Admin
                     productList = productList.OrderBy(s => s.Price);
                     break;
                 case "brand_asc":
-                    productList = productList.OrderBy(s =>s.Brand);
+                    productList = productList.OrderBy(s => s.Brand);
                     break;
                 case "brand_desc":
                     productList = productList.OrderByDescending(s => s.Brand);
@@ -81,12 +82,11 @@ namespace ShoeStoreApp.Controllers.Admin
             int pageSize = 10;
             var paginatedProducts = await PaginatedList<Product>.CreateAsync(productList, pageNumber ?? 1, pageSize);
             combine.PaginatedListProduct = paginatedProducts;
-            return PartialView("~/Views/Admin/Product.cshtml", combine);
+            return PartialView(combine);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("/AddProduct", Name = "AddProduct")]
         public async Task<IActionResult> AddProduct([Bind("Name", "Price", "Description", "Brand", "Gender", "Category")] Product product, string[] color, IFormFile[] file)
         {
             if (ModelState.IsValid)
@@ -104,7 +104,7 @@ namespace ShoeStoreApp.Controllers.Admin
                     ProductVariant newVarient = new ProductVariant
                     {
                         Color = String.Join("/", color[i]),
-                        ImgPath = "images/" + fileNameStore + Path.GetExtension(file[i].FileName),
+                        ImgPath = "/images/" + fileNameStore + Path.GetExtension(file[i].FileName),
                         Product = product,
                     };
                     product.Variants.Add(newVarient);
@@ -127,15 +127,14 @@ namespace ShoeStoreApp.Controllers.Admin
                     }
                 }
             }
-            
-            return RedirectToAction("Index");   
+
+            return RedirectToAction("Index");
         }
         [HttpPost]
-        [Route("/DeleteProduct/{id}", Name = "DeleteProduct")]
         public async Task<IActionResult> DeleteProduct([FromRoute] int id)
         {
             Product product = _context.Products.Find(id);
-            if (product!=null)
+            if (product != null)
             {
                 _context.Products.Remove(product);
                 _context.SaveChanges();
@@ -143,18 +142,107 @@ namespace ShoeStoreApp.Controllers.Admin
             return RedirectToAction("Index");
         }
         [HttpPost]
-        [Route("/DeleteProducts", Name = "DeleteProducts")]
         public async Task<IActionResult> DeleteProducts(string productSelectedIds)
         {
             string[] productIds = productSelectedIds.Split(',');
             int[] intProductIds = productIds.Select(int.Parse).ToArray();
-            foreach(int id in intProductIds)
+            foreach (int id in intProductIds)
             {
                 _context.Products.Remove(_context.Products.Find(id));
                 _context.SaveChanges();
             }
 
             return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> Edit([FromRoute] int id)
+        {
+            Product product = _context.Products.Find(id);
+            List<ProductVariant> productVariants = _context.ProductVariants.Where(
+                    c => c.ProductId == id).Include(c => c.Items).ToList();
+            CombineEditProduct combine = new CombineEditProduct
+            {
+                Product = product,
+                ProductVariants = productVariants,
+            };
+            return PartialView(combine);
+        }
+        [HttpPost]
+        public async Task<IActionResult> PostEditProduct([FromRoute] int id, 
+            [Bind("Name", "Price", "Description", "Brand", "Gender", "Category")] Product product, 
+            string[] color, 
+            IFormFile[] file, 
+            string[] size)
+        {
+            //Change product
+            Product productToEdit = _context.Products.Include(c => c.Variants).Where(c => c.Id == id).ToList()[0];
+            productToEdit.Name = product.Name;
+            productToEdit.Description = product.Description;
+            productToEdit.Price = product.Price;
+            productToEdit.Brand = product.Brand;
+            productToEdit.Gender = product.Gender;
+            productToEdit.Category = product.Category;
+            _context.SaveChanges();
+            //Change productVariant
+            List<ProductVariant> productVariants = productToEdit.Variants.ToList();
+            int count = 0;
+            foreach(var variant in productVariants) 
+            {
+                variant.Color = color[count];
+                if (file.Length==1)
+                {
+                    var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                    var fileNameStore = Guid.NewGuid().ToString();
+                    var fileName = Path.Combine(uploadFolder, fileNameStore + Path.GetExtension(file[0].FileName));
+                    using (var fileStream = new FileStream(fileName, FileMode.Create))
+                    {
+                        await file[0].CopyToAsync(fileStream);
+                    }
+                    if (count==0)
+                    {
+                        variant.ImgPath = "/images/" + fileNameStore + Path.GetExtension(file[0].FileName);
+                    }
+                } 
+                if (file.Length == 2)
+                {
+                    var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                    var fileNameStore = Guid.NewGuid().ToString();
+                    var fileName = Path.Combine(uploadFolder, fileNameStore + Path.GetExtension(file[count].FileName));
+                    using (var fileStream = new FileStream(fileName, FileMode.Create))
+                    {
+                        await file[count].CopyToAsync(fileStream);
+                    }
+                    variant.ImgPath = "/images/" + fileNameStore + Path.GetExtension(file[count].FileName);
+                }
+                _context.SaveChanges();
+                // Change product variant size
+                ProductVariant variantSeleted = _context.ProductVariants.Include(c => c.Items)
+                    .Where(c => c.Id == variant.Id).ToList()[0];
+                List<ProductVariantItem> items = variantSeleted.Items.ToList();
+                foreach (ProductVariantItem item in items) 
+                {
+                    string stockQuantityBySize = size[count];
+                    Dictionary<string, int> productVariantItems = ParseInputString(stockQuantityBySize);
+                    item.StockQuantity = productVariantItems[item.Size];
+                    _context.SaveChanges();
+                }
+                count++;
+                
+            }
+            return RedirectToAction("Index");
+        }
+        static Dictionary<string, int> ParseInputString(string input)
+        {
+            string[] pairs = input.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            Dictionary<string, int> keyValuePairs = new Dictionary<string, int>();
+            foreach (string pair in pairs)
+            {
+                string[] parts = pair.Trim().Split('-');
+                if (parts.Length == 2 && int.TryParse(parts[1], out int value))
+                {
+                    keyValuePairs.Add(parts[0], value);
+                }
+            }
+            return keyValuePairs;
         }
     }
     public class Combine
@@ -167,7 +255,6 @@ namespace ShoeStoreApp.Controllers.Admin
     {
         public int PageIndex { get; private set; }
         public int TotalPages { get; private set; }
-
         public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
@@ -186,5 +273,11 @@ namespace ShoeStoreApp.Controllers.Admin
             var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
+    }
+    public class CombineEditProduct
+    {
+        public Product Product { get; set; }
+        public List<ProductVariant> ProductVariants { get; set; }   
+
     }
 }

@@ -6,14 +6,14 @@ using NuGet.Versioning;
 using ShoeStoreApp.Models;
 using System.Drawing.Printing;
 
-namespace ShoeStoreApp.Controllers.Admin
+namespace ShoeStoreApp.Areas.Admin.Controllers
 {
-    [Route("admin/[controller]")]
+    [Area("Admin")]
     public class CustomerController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ILogger<HomeController> _logger;
-        public CustomerController(ILogger<HomeController> logger, UserManager<ApplicationUser> userManager)
+        private readonly ILogger<CustomerController> _logger;
+        public CustomerController(ILogger<CustomerController> logger, UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
             _logger = logger;
@@ -55,7 +55,8 @@ namespace ShoeStoreApp.Controllers.Admin
             CombineCustomer combine = new CombineCustomer();
             var paginatedCustomer = await PaginatedList<ApplicationUser>.CreateAsync(listUser, pageNumber ?? 1, pageSize);
             combine.PaginatedListCustomer = paginatedCustomer;
-            return PartialView("~/Views/Admin/Customer.cshtml", combine);
+            combine.TotalOrder = _userManager.Users.Count();
+            return PartialView(combine);
         }
         [HttpPost]
         [Route("/DeleteCustomer/{id}", Name = "DeleteCustomer")]
@@ -92,7 +93,6 @@ namespace ShoeStoreApp.Controllers.Admin
                     }
                 }
                 await _userManager.DeleteAsync(userFind);
-                
             }
             return RedirectToAction("Index");
         }
@@ -100,5 +100,6 @@ namespace ShoeStoreApp.Controllers.Admin
     public class CombineCustomer
     {
         public PaginatedList<ApplicationUser> PaginatedListCustomer { get; set; }
+        public int TotalOrder { get; set; }
     }
 }

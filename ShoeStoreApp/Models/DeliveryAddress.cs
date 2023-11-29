@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-using ShoeStoreApp.Controllers.Admin;
 
 namespace ShoeStoreApp.Models
 {
