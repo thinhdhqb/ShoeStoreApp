@@ -72,3 +72,7 @@ table input {
     padding: 18px;
 }
 
+table a {
+    color: black;
+    text-decoration: none;
+}
