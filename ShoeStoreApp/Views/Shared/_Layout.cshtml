@@ -33,11 +33,17 @@
                      id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 fs-5">
                         <!-- Link -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="/search?gender=men">NAM</a>
+                        <li class="nav-item me-2">
+                            <a class="nav-link" href="/Products">SẢN PHẨM</a>
+                        </li>
+                        <li class="nav-item me-2">
+                            <a class="nav-link" href="/Products?category=sneaker">SNEAKER</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/search?gender=women">NỮ</a>
+                            <a class="nav-link" href="/Products?category=basketball">BÓNG RỔ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Products?category=football">BÓNG ĐÁ</a>
                         </li>
                     </ul>
                     @await Html.PartialAsync("_LoginPartial")
@@ -45,23 +51,24 @@
                     <!-- Icons -->
                     <ul class="navbar-nav d-flex flex-row me-1">
                         <li class="nav-item me-3 me-lg-0">
-                            <a class="nav-link" href="/cart">
+                            <a class="nav-link" href="/Cart">
                                 <i class="fas fa-shopping-cart"></i>
                             </a>
                         </li>
                     </ul>
                     <!-- Search -->
-                    <form class="w-auto me-1" id="search-form">
+                    <form class="w-auto me-1 dropdown" id="search-form" asp-controller="Products" asp-action="Index">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <input type="search"
                                class="form-control"
                                id="search"
+                               name="search"
                                placeholder="Search"
                                aria-label="Search" />
+                        <ul class="dropdown-menu w-100" id="search-hint">
+                        </ul>
                     </form>
-                    <button class="btn btn-outline-dark" id="search-btn">Tìm kiếm</button>
-
-
+                    <button class="btn btn-outline-dark d-inline-block" id="search-btn" type="submit">Tìm kiếm</button>
                 </div>
             </div>
             <!-- Container wrapper -->
@@ -75,16 +82,8 @@
         </div>
     </footer> *@
     <script src="~/js/index.js" asp-append-version="true"></script>
-    <script>
-        $('#search').keypress(function (e) {
-            if (e.which == 13) {
-                console.log(e);
-                let search = $('#search').val();
-                let query = 'search.html?q=' + search;
-                window.location.replace(query);
-                return false;
-            }
-        })
+    <script src="~/js/search.js">
+
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

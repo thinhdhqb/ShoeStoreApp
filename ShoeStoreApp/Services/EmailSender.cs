@@ -23,6 +23,8 @@ namespace ShoeStoreApp.Services
 
         public async Task SendEmailAsync(string toEmail, string subject, string message)
         {
+            if (toEmail.Equals("admin@admin"))
+                return;
             await SendMail(new MailContent()
             {
                 To = toEmail,

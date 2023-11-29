@@ -22,6 +22,7 @@ internal class Program
         builder.Services.AddTransient<IEmailSender, EmailSender>();
         builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
         builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ShoeStoreAppContext>()
             .AddErrorDescriber<VietnameseIdentityErrorDescriber>();
         builder.Services.AddRazorPages();
@@ -58,6 +59,14 @@ internal class Program
             options.SlidingExpiration = true;
         });
 
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("Admin",
+                 policy => policy.RequireRole("Admin"));
+            options.AddPolicy("Member",
+                policy => policy.RequireRole("Member"));
+        });
+
 
         var app = builder.Build();
 
@@ -84,6 +93,25 @@ internal class Program
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
         app.MapRazorPages();
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var roles = new[] { "Admin", "Member" };
+
+            foreach (var role in roles)
+            {
+                if (!roleManager.RoleExistsAsync(role).Result)
+                {
+                    roleManager.CreateAsync(new IdentityRole(role)).Wait();
+                }
+            }
+        }
+
+
         app.Run();
+
+
+
     }
 }

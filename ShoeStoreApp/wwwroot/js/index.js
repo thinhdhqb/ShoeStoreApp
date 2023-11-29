@@ -1,10 +1,6 @@
 
 
-$('.card').click(function (e) {
-    let id = $(e.currentTarget).data('id');
-    window.location.replace('detail/' + id);
-    return false;
-}).mouseover(function (e) {
+$('.card').mouseover(function (e) {
     $(e.currentTarget).find('.img-container').removeClass('hidden');
 }).mouseout(function (e) {
     $(e.currentTarget).find('.img-container').addClass('hidden');

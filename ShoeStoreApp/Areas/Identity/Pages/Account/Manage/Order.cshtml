@@ -59,8 +59,8 @@
                                     <div class="cart-item-title">
                                         @item.ProductVariantItem.ProductVariant.Product.Name
                                     </div>
-                                    <div class="text-secondary">@item.ProductVariantItem.ProductVariant.Color, @item.ProductVariantItem.Size</div>
-                                    <span class="quantity text-secondary">Số lương: @item.Quantity</span>
+                                    <div class="text-secondary">@PropertyDisplayHelper.GetTextForColor(item.ProductVariantItem.ProductVariant.Color), @item.ProductVariantItem.Size</div>
+                                    <span class="quantity text-secondary">Số lượng: @item.Quantity</span>
                                 </div>
 
                                 <div class="price">@CurrencyFormat.Format(item.ProductVariantItem.ProductVariant.Product.Price * item.Quantity)</div>
