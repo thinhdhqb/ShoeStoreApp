@@ -10,12 +10,13 @@
     var filtered = ViewData["filtered"];
     var search = ViewData["search"];
     var category = ViewData["category"];
+    var sort = ViewData["sort"];
     var gender = (string[]) ViewData["gender"];
     var price = (string[]) ViewData["price"];
     var brand = (string[]) ViewData["brand"];
     var color = (string[]) ViewData["color"];
-}
 
+}
 <!-- Main Container -->
 <div class="main-container container pt-3 h-100">
     <div class="mb-3">
@@ -33,23 +34,39 @@
         <!-- filter sidebar -->
         <form id="filter-sidebar"> 
             <!-- Category -->
+            <input type="hidden" name="category" id="category-input" />
             <div class="filter-item">
                 <div class="mb-1">
                     <a class="category-link @((bool) filtered == false ? "selected" : string.Empty)" asp-action="Index">Tất cả giày</a>
                 </div>
                 <div class="mb-1">
-                    <a class="category-link @(category != null && category.Equals("sneaker") ? "selected" : string.Empty)"
-                       asp-route-category="sneaker">Giày sneaker</a>
+                    <a href="" data-category="sneaker" class="category-link @(category != null && category.Equals("sneaker") ? "selected" : string.Empty)"
+                        >Giày sneaker</a>
                 </div>
                 <div class="mb-1">
-                    <a class="category-link @(category != null && category.Equals("basketball") ? "selected" : string.Empty)"
-                       asp-route-category="basketball">Giày bóng rổ</a>
+                    <a href="" data-category="basketball" class="category-link @(category != null && category.Equals("basketball") ? "selected" : string.Empty)"
+                       >Giày bóng rổ</a>
                 </div>
                 <div class="mb-1">
-                    <a class="category-link @(category != null && category.Equals("football") ? "selected" : string.Empty)"
-                       asp-route-category="football">Giày bóng đá</a>
+                    <a href="" data-category="football" class="category-link @(category != null && category.Equals("football") ? "selected" : string.Empty)"
+                       >Giày bóng đá</a>
                 </div>
             </div>
+
+            <hr />
+
+            <!-- Sort -->
+            <input type="hidden" name="sort" id="sort-input" />
+            <div class="filter-item">
+                <div class="mb-1">
+                    <a href="" data-sort="price_asc" class="sort-link @(sort != null && sort.Equals("price_asc") ? "selected" : string.Empty)">Giá tăng dần</a>
+                </div>
+                <div class="mb-1">
+                    <a href="" data-sort="price_desc" class="sort-link @(sort != null && sort.Equals("price_desc") ? "selected" : string.Empty)">Giá giảm dần</a>
+                </div>
+            </div>
+
+
             <!-- Gender -->
             <div class="filter-item">
                 <hr />

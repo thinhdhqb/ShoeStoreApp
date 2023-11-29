@@ -116,6 +116,8 @@ namespace ShoeStoreApp.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    if (Input.Email.Equals("admin@admin"))
+                        return Redirect("/Admin");
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)

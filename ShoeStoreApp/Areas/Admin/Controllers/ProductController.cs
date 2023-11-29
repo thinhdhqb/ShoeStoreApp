@@ -10,10 +10,12 @@ using System.Drawing;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Drawing.Printing;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ShoeStoreApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Policy ="Admin")]
     public class ProductController : Controller
     {
         private readonly ILogger<HomeController> _logger;

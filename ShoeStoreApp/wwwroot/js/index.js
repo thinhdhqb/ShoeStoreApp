@@ -41,3 +41,15 @@ function filter() {
         queryString = queryString.substring(0, queryString.length - 1);
     window.location.href = queryString;
 }
+
+$('.category-link').click(function () {
+    $('#category-input').val($(this).data('category'));
+    $("#filter-sidebar").submit();
+    return false;
+})
+
+$('.sort-link').click(function () {
+    $('#sort-input').val($(this).data('sort'));
+    $("#filter-sidebar").submit();
+    return false;
+})
