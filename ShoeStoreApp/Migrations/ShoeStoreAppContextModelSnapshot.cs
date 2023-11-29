@@ -224,6 +224,32 @@ namespace ShoeStoreApp.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ShoeStoreApp.Models.CartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProductVariantItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("ProductVariantItemId");
+
+                    b.ToTable("CartItems");
+                });
+
             modelBuilder.Entity("ShoeStoreApp.Models.DeliveryAddress", b =>
                 {
                     b.Property<int>("Id")
@@ -455,6 +481,23 @@ namespace ShoeStoreApp.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ShoeStoreApp.Models.CartItem", b =>
+                {
+                    b.HasOne("ShoeStoreApp.Models.ApplicationUser", "Customer")
+                        .WithMany("CartItems")
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("ShoeStoreApp.Models.ProductVariantItem", "ProductVariantItem")
+                        .WithMany()
+                        .HasForeignKey("ProductVariantItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("ProductVariantItem");
+                });
+
             modelBuilder.Entity("ShoeStoreApp.Models.DeliveryAddress", b =>
                 {
                     b.HasOne("ShoeStoreApp.Models.ApplicationUser", "Customer")
@@ -520,6 +563,8 @@ namespace ShoeStoreApp.Migrations
 
             modelBuilder.Entity("ShoeStoreApp.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("CartItems");
+
                     b.Navigation("DeliveryAddresses");
                 });
 

@@ -1,4 +1,6 @@
-﻿namespace ShoeStoreApp.Utils
+﻿using Microsoft.Build.Logging;
+
+namespace ShoeStoreApp.Utils
 {
     public class VietnameseTranslator
     {

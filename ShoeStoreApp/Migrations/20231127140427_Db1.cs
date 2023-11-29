@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ShoeStoreApp.Migrations
 {
-    public partial class shoesdb1 : Migration
+    public partial class Db1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -262,6 +262,32 @@ namespace ShoeStoreApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CartItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ProductVariantItemId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CartItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CartItems_AspNetUsers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CartItems_ProductVariantItems_ProductVariantItemId",
+                        column: x => x.ProductVariantItemId,
+                        principalTable: "ProductVariantItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderItems",
                 columns: table => new
                 {
@@ -328,6 +354,16 @@ namespace ShoeStoreApp.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CartItems_CustomerId",
+                table: "CartItems",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CartItems_ProductVariantItemId",
+                table: "CartItems",
+                column: "ProductVariantItemId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DeliveryAddresses_CustomerId",
                 table: "DeliveryAddresses",
                 column: "CustomerId");
@@ -374,6 +410,9 @@ namespace ShoeStoreApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "CartItems");
 
             migrationBuilder.DropTable(
                 name: "OrderItems");

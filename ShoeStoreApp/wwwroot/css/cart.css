@@ -20,9 +20,9 @@
     font-size: larger;
 }
 
-.cart-item-quantity i:hover {
-    cursor: pointer;
-}
+    .cart-item-quantity i:hover {
+        cursor: pointer;
+    }
 
 .remove:hover {
     cursor: pointer;
@@ -32,3 +32,7 @@
     font-size: x-large;
 }
 
+.btn-quantity {
+    background-color: transparent;
+    border: none;
+}

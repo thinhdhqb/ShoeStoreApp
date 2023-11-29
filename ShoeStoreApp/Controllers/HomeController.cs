@@ -20,20 +20,8 @@ namespace ShoeStoreApp.Controllers
 
         public IActionResult Index()
         {
-            var products = _context.Products.Include(p => p.Variants).ToList();
-            return View(products);
+            return View();
         }
-
-        public IActionResult Detail(int id)
-        {
-            var product = _context.Products.Find(id);
-            if (product == null)
-            {
-                RedirectToAction("Error");
-            }
-            return View(product);
-        }
-
 
         public IActionResult Privacy()
         {

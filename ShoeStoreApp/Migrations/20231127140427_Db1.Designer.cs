@@ -12,8 +12,8 @@ using ShoeStoreApp.Data;
 namespace ShoeStoreApp.Migrations
 {
     [DbContext(typeof(ShoeStoreAppContext))]
-    [Migration("20231127101631_shoesdb1")]
-    partial class shoesdb1
+    [Migration("20231127140427_Db1")]
+    partial class Db1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -224,6 +224,32 @@ namespace ShoeStoreApp.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("ShoeStoreApp.Models.CartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProductVariantItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("ProductVariantItemId");
+
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("ShoeStoreApp.Models.DeliveryAddress", b =>
@@ -457,6 +483,23 @@ namespace ShoeStoreApp.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ShoeStoreApp.Models.CartItem", b =>
+                {
+                    b.HasOne("ShoeStoreApp.Models.ApplicationUser", "Customer")
+                        .WithMany("CartItems")
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("ShoeStoreApp.Models.ProductVariantItem", "ProductVariantItem")
+                        .WithMany()
+                        .HasForeignKey("ProductVariantItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("ProductVariantItem");
+                });
+
             modelBuilder.Entity("ShoeStoreApp.Models.DeliveryAddress", b =>
                 {
                     b.HasOne("ShoeStoreApp.Models.ApplicationUser", "Customer")
@@ -522,6 +565,8 @@ namespace ShoeStoreApp.Migrations
 
             modelBuilder.Entity("ShoeStoreApp.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("CartItems");
+
                     b.Navigation("DeliveryAddresses");
                 });
 

@@ -104,7 +104,7 @@ namespace ShoeStoreApp.Controllers.Admin
                     ProductVariant newVarient = new ProductVariant
                     {
                         Color = String.Join("/", color[i]),
-                        ImgPath = "images/" + fileNameStore + Path.GetExtension(file[i].FileName),
+                        ImgPath = "/images/" + fileNameStore + Path.GetExtension(file[i].FileName),
                         Product = product,
                     };
                     product.Variants.Add(newVarient);
