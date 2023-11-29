@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ShoeStoreApp.Migrations
 {
-    public partial class Db1 : Migration
+    public partial class Db2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

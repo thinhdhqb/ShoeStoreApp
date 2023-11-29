@@ -12,8 +12,8 @@ using ShoeStoreApp.Data;
 namespace ShoeStoreApp.Migrations
 {
     [DbContext(typeof(ShoeStoreAppContext))]
-    [Migration("20231127140427_Db1")]
-    partial class Db1
+    [Migration("20231129170105_Db2")]
+    partial class Db2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
