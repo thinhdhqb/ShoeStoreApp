@@ -90,6 +90,16 @@
                                             Xám
                                         </label>
                                     </div>
+                                    <div class="form-check col-4">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               value="yellow"
+                                               id="color-yellow" />
+                                        <label class="form-check-label"
+                                               for="color-yellow">
+                                            Vàng
+                                        </label>
+                                    </div>
                                 </div>
                                 <div class="col-6">
                                     <label for="variant-img"
