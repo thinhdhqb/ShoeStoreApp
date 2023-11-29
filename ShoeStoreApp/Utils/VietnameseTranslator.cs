@@ -21,7 +21,8 @@ namespace ShoeStoreApp.Utils
                 { "red", "đỏ" },
                 { "gray", "xám" },
                 { "blue", "xanh dương" },
-                { "green", "xanh lục" }
+                { "green", "xanh lục" },
+                { "yellow", "edit" }
             };
         }
         public string Translate(string word)
