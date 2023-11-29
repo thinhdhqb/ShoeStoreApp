@@ -105,7 +105,7 @@
                 <col span="1" style="width: 0%; min-width: 100px" />
                 <col span="1" style="width: 0%; min-width: 140px" />
                 <col span="1" style="width: 100%" />
-                <col span="1" style="width: 0%; min-width: 100px" />
+                <col span="1" style="width: 0%; min-width: 130px" />
                 <col span="1" style="width: 0%; min-width: 200px" />
                 <col span="1" style="width: 0%; min-width: 100px" />
             </colgroup>
@@ -114,17 +114,17 @@
             <th>Id</th>
             <th>Tên</th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["BrandSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Hãng</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["BrandSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Hãng &ensp;<i class="fa-solid fa-sort ms-auto"></i></a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Giá</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Giá &ensp;<i class="fa-solid fa-sort"></i></a>
             </th>
             <th>Mô tả</th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["GenderSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Giới tính</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["GenderSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Giới tính &ensp;<i class="fa-solid fa-sort"></i></a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["CategorySortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Phân loại</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["CategorySortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Phân loại &ensp;<i class="fa-solid fa-sort"></i></a>
             </th>   
             <th></th>
             </thead>
