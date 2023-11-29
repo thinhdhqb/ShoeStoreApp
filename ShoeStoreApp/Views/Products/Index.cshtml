@@ -300,7 +300,7 @@
                 <!-- Product -->
                 @foreach(var product in Model)
                 {
-                    <a class="card col-4" asp-action="Details" asp-route-id="@product.Id">
+                    <a class="card col-md-6 col-lg-4" asp-action="Details" asp-route-id="@product.Id">
                         <div class="card-img-top">
                             <img class="display-img"
                                  src="@product.Variants.ElementAt(0).ImgPath"

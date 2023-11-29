@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
+using ShoeStoreApp.Utils;
 
 namespace ShoeStoreApp.Controllers
 {
@@ -81,8 +82,17 @@ namespace ShoeStoreApp.Controllers
                 Status = OrderStatusCode.PENDING
             };
 
+            bool checkoutFailed = false;
+
             foreach (var cartItem in cartItems)
             {
+
+                if (cartItem.Quantity > cartItem.ProductVariantItem.StockQuantity)
+                {
+                    checkoutFailed = true;
+                    TempData["FailedCartItem"] = cartItem.ProductVariantItem.ProductVariant.Product.Name + " - " + PropertyDisplayHelper.GetTextForColor(cartItem.ProductVariantItem.ProductVariant.Color);
+                    break;
+                }
                 var orderItem = new OrderItem
                 {
                     Order = order,
@@ -90,8 +100,15 @@ namespace ShoeStoreApp.Controllers
                     Quantity = cartItem.Quantity,
                 };
                 _context.CartItems.Remove(cartItem);
+                orderItem.ProductVariantItem.StockQuantity -= orderItem.Quantity;
+                _context.ProductVariantItems.Update(orderItem.ProductVariantItem);
                 orderItems.Add(orderItem);
             }
+
+            if (checkoutFailed)
+                return RedirectToAction("Failure");
+
+
             order.Items = orderItems;
             order.Total = order.ItemsTotal + order.DeliveryFee;
             _context.Orders.Add(order);
@@ -171,6 +188,12 @@ namespace ShoeStoreApp.Controllers
             return View();
         }
 
+        public IActionResult Failure()
+        {
+            if (string.IsNullOrEmpty((string)TempData["FailedCartItem"]))
+                return Redirect("/Products");
+            return View();
+        }
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
