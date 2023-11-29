@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShoeStoreApp.Data;
@@ -7,6 +8,7 @@ using ShoeStoreApp.Models;
 namespace ShoeStoreApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Policy ="Admin")]
     public class OrderController : Controller
     {
         private readonly ILogger<OrderController> _logger;

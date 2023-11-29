@@ -21,10 +21,11 @@ namespace ShoeStoreApp.Controllers
             _context = context;
         }
 
-        public IActionResult Index(string search, string category, string[] gender, string[] brand, string[] color, string[] price) 
+        public IActionResult Index(string search, string category, string sort, string[] gender, string[] brand, string[] color, string[] price) 
         {
             IEnumerable<Product> products = _context.Products.Include(p => p.Variants).ToList();
             ViewData["filtered"] = false;
+
             if (!string.IsNullOrEmpty(search))
             {
                 products = products.Where(p => p.Name.ToLower().Contains(search.ToLower()));
@@ -36,6 +37,16 @@ namespace ShoeStoreApp.Controllers
             {
                 products = products.Where(p => p.Category.Equals(category));
                 ViewData["category"] = category;
+                ViewData["filtered"] = true;
+            }
+
+            if (!string.IsNullOrEmpty(sort))
+            {
+                if (sort.Equals("price_asc"))
+                    products = products.OrderBy(o => o.Price);
+                else if (sort.Equals("price_desc"))
+                    products = products.OrderByDescending(o => o.Price);
+                ViewData["sort"] = sort;
                 ViewData["filtered"] = true;
             }
 
@@ -67,6 +78,7 @@ namespace ShoeStoreApp.Controllers
                 ViewData["price"] = price;
                 ViewData["filtered"] = true;
             }
+
 
             return View(products.ToList());
         }

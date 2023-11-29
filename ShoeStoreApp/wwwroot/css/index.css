@@ -39,6 +39,7 @@ body {
     overflow-y: scroll;
     padding-bottom: 150px;
     padding-right: 20px;
+    scrollbar-arrow-color
 }
 
     #filter-sidebar.stickIt {
@@ -51,6 +52,7 @@ body {
         margin-top: 0;
         margin-bottom: 10px;
     }
+
 
 .filter-item {
     margin-bottom: 14px;
@@ -87,7 +89,7 @@ body {
         margin: auto;
     }
 
-.category-link {
+.category-link, .sort-link {
     font-weight: 500;
     font-size: large;
     color: black;
@@ -177,7 +179,6 @@ body {
 }
 
 
-<style >
 .bd-placeholder-img {
     font-size: 1.125rem;
     text-anchor: middle;

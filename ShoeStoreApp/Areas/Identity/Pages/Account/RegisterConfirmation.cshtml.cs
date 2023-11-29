@@ -20,11 +20,13 @@ namespace ShoeStoreApp.Areas.Identity.Pages.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _sender;
+        private readonly ILogger<RegisterConfirmationModel> _logger;
 
-        public RegisterConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender sender)
+        public RegisterConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender sender, ILogger<RegisterConfirmationModel> logger)
         {
             _userManager = userManager;
             _sender = sender;
+            _logger = logger;
         }
 
         /// <summary>
@@ -47,6 +49,7 @@ namespace ShoeStoreApp.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnGetAsync(string email, string returnUrl = null)
         {
+
             if (email == null)
             {
                 return RedirectToPage("/Index");
@@ -64,9 +67,12 @@ namespace ShoeStoreApp.Areas.Identity.Pages.Account
             // DisplayConfirmAccountLink = true;
             if (DisplayConfirmAccountLink)
             {
+
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                
+
                 EmailConfirmationUrl = Url.Page(
                     "/Account/ConfirmEmail",
                     pageHandler: null,

@@ -137,7 +137,11 @@ namespace ShoeStoreApp.Areas.Identity.Pages.Account
                         $"Vui lòng nhấn <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>vào đây</a> để xác thực tài khoản.");
 
                     if (Input.Email.Equals("admin@admin"))
+                    {
                         await _userManager.AddToRoleAsync(user, "Admin");
+                        user.EmailConfirmed = true;
+                        await _userManager.UpdateAsync(user);
+                    }
                     else
                         await _userManager.AddToRoleAsync(user, "Member");
 

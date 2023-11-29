@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -11,6 +12,7 @@ using System.Globalization;
 namespace ShoeStoreApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Policy ="Admin")]
     public class DashboardController : Controller
     {
         private readonly ILogger<DashboardController> _logger;
