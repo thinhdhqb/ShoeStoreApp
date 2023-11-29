@@ -18,21 +18,21 @@
 <!-- Main Container -->
 <div class="main-container container pt-3 h-100">
     @if (!string.IsNullOrEmpty(Model.StatusMessage)) {
-        <div class="alert alert-success hide " id="success-alert" role="alert">
+        <div class="alert  @(Model.StatusMessage.StartsWith("Thành công") ? "alert-success" : "alert-danger") hide" id="success-alert" role="alert">
             <div>
-                Sản phẩm đã được thêm vào giỏ hàng của bạn!
+                @Model.StatusMessage
             </div>
         </div>
     }
 
-    <div class="m-3 mx-5">
+    <div class="m-3 mx-lg-5 mx-md-0">
         <div class="row ">
-            <div class="col-6">
+            <div class="col-lg-6">
                 <img id="main-img" src="@Model.Product.Variants.ElementAt(0).ImgPath" alt="" />
             </div>
-            <div class="col-1">
+            <div class="col-lg-1">
             </div>
-            <div class="col-5">
+            <div class="col-lg-5">
                 <input type="hidden" id="productName" value="@Model.Product.Name">
                 <h2>@Model.Product.Name</h2>
                 <h6 class="card-text text-secondary">Giày @translator.Translate(Model.Product.Category) @translator.Translate(Model.Product.Gender)</h6>

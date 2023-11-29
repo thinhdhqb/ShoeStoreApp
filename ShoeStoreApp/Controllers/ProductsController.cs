@@ -89,7 +89,15 @@ namespace ShoeStoreApp.Controllers
             {
                 return RedirectToAction("Index");
             }
-            var product = _context.Products.Include(p => p.Variants).ThenInclude(v => v.Items).Single(p => p.Id == id);
+            var products = _context.Products.Include(p => p.Variants).ThenInclude(v => v.Items).Where(p => p.Id == id);
+
+            if (products.Count() == 0)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var product = products.First();
+
             if (product == null)
             {
                 return RedirectToAction("Index");
@@ -100,9 +108,13 @@ namespace ShoeStoreApp.Controllers
                 Product = product
             };
             if (success != null)
-                model.StatusMessage = "Sản phẩm đã được thêm vào giỏ hàng";
+            {
+                if (success.Equals("true"))
+                    model.StatusMessage = "Thành công! Sản phẩm đã được thêm vào giỏ hàng";
+                else if (success.Equals("false"))
+                    model.StatusMessage = "Vui lòng chọn kích cỡ";
 
-
+            }
             return View(model);
         }
 

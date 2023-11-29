@@ -48,7 +48,8 @@ namespace ShoeStoreApp.Controllers
             var productVariantItem = _context.ProductVariantItems.Find(itemId);
             if (productVariantItem == null)
             {
-                return Redirect(returnUrl);
+
+                return Redirect(returnUrl + "?success=false");
             }
 
 

@@ -4,6 +4,8 @@
     ViewData["Title"] = "Giỏ hàng";
 }
 
+@model string
+
 @{
     var translator = new VietnameseTranslator();
 }
@@ -15,10 +17,11 @@
 }
 <!-- Main Container -->
 <div class="main-container container pt-3 align-items-center justify-content-center d-flex flex-column">
-    <i class="fa-regular fa-circle-check mb-3"
+    <i class="fa-regular fa-circle-xmark mb-3"
        style="font-size: 100px"></i>
-    <h1>Đặt mua thành công!</h1>
-    <p>Đơn hàng đang trong quá trình xác nhận. Nhấn <a asp-area="Identity" asp-page="/Account/Manage/Order">vào đây</a> để xem đơn đặt hàng của bạn</p>
+    <h1>Đặt mua thất bại!</h1>
+    <p>Đơn hàng của bạn chứa sản phẩm có số lượng lớn hơn số lượng trong kho. Vui lòng giảm số lượng đặt mua. Nhấn <a href="/Cart">vào đây</a> để quay lại giỏ hàng</p>
+    <p>Sản phẩm bị thất bại: @TempData["FailedCartItem"]</p>
     <div class="mt-5">
         <a href="/"
            class="link-dark link-underline link-underline-opacity-0">
