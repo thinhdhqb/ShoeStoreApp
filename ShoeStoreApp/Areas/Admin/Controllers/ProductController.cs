@@ -173,7 +173,8 @@ namespace ShoeStoreApp.Areas.Admin.Controllers
             [Bind("Name", "Price", "Description", "Brand", "Gender", "Category")] Product product, 
             string[] color, 
             IFormFile[] file, 
-            string[] size)
+            string[] size, 
+            string saveProductEditImage)
         {
             //Change product
             Product productToEdit = _context.Products.Include(c => c.Variants).Where(c => c.Id == id).ToList()[0];
@@ -187,33 +188,31 @@ namespace ShoeStoreApp.Areas.Admin.Controllers
             //Change productVariant
             List<ProductVariant> productVariants = productToEdit.Variants.ToList();
             int count = 0;
+            int imgCount = 0;
             foreach(var variant in productVariants) 
             {
                 variant.Color = color[count];
-                if (file.Length==1)
+                if (file.Length != 0) 
                 {
-                    var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-                    var fileNameStore = Guid.NewGuid().ToString();
-                    var fileName = Path.Combine(uploadFolder, fileNameStore + Path.GetExtension(file[0].FileName));
-                    using (var fileStream = new FileStream(fileName, FileMode.Create))
+                    string[] numberOfImgPathEdits = { };
+                    if (saveProductEditImage != "")
                     {
-                        await file[0].CopyToAsync(fileStream);
+                        numberOfImgPathEdits = saveProductEditImage.Substring(0, saveProductEditImage.Length - 3).Split(" / ");
                     }
-                    if (count==0)
+                    int[] intVariantChangeImage = numberOfImgPathEdits.Select(int.Parse).ToArray();
+                    Array.Sort(intVariantChangeImage);
+                    if (intVariantChangeImage.Contains(count + 1))
                     {
-                        variant.ImgPath = "/images/" + fileNameStore + Path.GetExtension(file[0].FileName);
+                        var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                        var fileNameStore = Guid.NewGuid().ToString();
+                        var fileName = Path.Combine(uploadFolder, fileNameStore + Path.GetExtension(file[imgCount].FileName));
+                        using (var fileStream = new FileStream(fileName, FileMode.Create))
+                        {
+                            await file[imgCount].CopyToAsync(fileStream);
+                        }
+                        variant.ImgPath = "/images/" + fileNameStore + Path.GetExtension(file[imgCount].FileName);
+                        imgCount++;
                     }
-                } 
-                if (file.Length == 2)
-                {
-                    var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
-                    var fileNameStore = Guid.NewGuid().ToString();
-                    var fileName = Path.Combine(uploadFolder, fileNameStore + Path.GetExtension(file[count].FileName));
-                    using (var fileStream = new FileStream(fileName, FileMode.Create))
-                    {
-                        await file[count].CopyToAsync(fileStream);
-                    }
-                    variant.ImgPath = "/images/" + fileNameStore + Path.GetExtension(file[count].FileName);
                 }
                 _context.SaveChanges();
                 // Change product variant size
