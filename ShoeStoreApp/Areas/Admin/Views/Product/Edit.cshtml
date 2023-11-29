@@ -219,6 +219,7 @@
                 <div>
                     <span class="fs-5 me-4">Biến thể màu</span>
                 </div>
+                <input type="hidden" value="" id="saveProductEditImage" name="saveProductEditImage" />
                 <div class="variant-container">
                     @{
                         int count = 0;
@@ -315,11 +316,11 @@
                             <div class="col-6">
                                 <label for="variant-img"
                                    class="form-label">Ảnh minh họa</label>
-                                <input class="form-control"
+                                <input class="form-control variant-img"
                                    name="file"
                                    type="file"
                                    value="@productVariant.ImgPath"
-                                   id="variant-img"/>
+                                   id="variant-img-@(count+1)"/>
                             </div>
                             <div class="container mt-3">
                                 <div class="row">

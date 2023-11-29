@@ -42,3 +42,18 @@ $("#btn-edit-product").click(function () {
         variantSizeForColor.val(sizeSave.slice(0, -3))
     }
 })
+$(".variant-img").change(function () {
+    var numberOfVariant = $("#numberVariant").val()
+    let productImgs = ""
+    for (let i = 1; i <= numberOfVariant; i++)
+    {
+        let tag = $("#variant-img-" + "" + i)
+        let variantImg = $(this)
+        if (variantImg.attr("id") === tag.attr("id")) {
+            productImgs = i + " / "
+        }
+    }
+    productImgs = $("#saveProductEditImage").val() + productImgs
+    $("#saveProductEditImage").val(productImgs)
+    console.log($("#saveProductEditImage").val())
+})
