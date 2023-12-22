@@ -19,7 +19,7 @@
         {
             <form class="address-container" asp-page-handler="SetDefaultAddress">
                 <input name="addressId" value="@address.Id" type="hidden"/>
-                <a onclick="this.parentNode.submit(); return false;">
+                <div onclick="this.parentNode.submit(); return false;">
                     @if (address.IsDefault)
                     {
                         <div class="mb-1 fw-bold border border-primary text-primary p-2"
@@ -39,17 +39,15 @@
                         <span class="text-secondary">Địa chỉ:&emsp;</span>
                         <span>@address.Address</span>
                     </div>
-                    <div class="btn-icon text-secondary"
-                         data-bs-toggle="modal"
-                         data-bs-target="#update-address-modal">
-                        <form method="post" asp-page-handler="DeleteAddress">
+                    <!-- <div class="btn-icon text-secondary">
+                        <form asp-page-handler="DeleteAddress" class="OKOKO">
                             <input type="hidden" value="@address.Id" name="addressId" />
-                            <a onclick="this.parentNode.submit(); return false;" class="link-secondary">
+                            <a onclick="console.log(this.parentNode); this.parentNode.submit(); return false;" class="link-secondary">
                                 <i class="fa-solid fa-trash"></i>
                             </a>
                         </form>
-                    </div>
-                </a>
+                    </div> -->
+                </div>
 
             </form>
         }

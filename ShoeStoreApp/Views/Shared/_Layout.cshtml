@@ -60,7 +60,7 @@
                         </li>
                     </ul>
                     <!-- Search -->
-                    <form class="w-auto me-1 dropdown" id="search-form" asp-controller="Products" asp-action="Index">
+                    <form class="w-auto me-1 dropdown" id="search-form" asp-route="/Products">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <input type="search"
                                class="form-control"
@@ -68,7 +68,7 @@
                                name="search"
                                placeholder="Search"
                                aria-label="Search" />
-                        <ul class="dropdown-menu w-100" id="search-hint">
+                        <ul class="dropdown-menu" id="search-hint">
                         </ul>
                     </form>
                     <button class="btn btn-outline-dark d-inline-block" id="search-btn" type="submit">Tìm kiếm</button>

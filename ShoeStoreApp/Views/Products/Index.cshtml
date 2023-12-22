@@ -33,8 +33,9 @@
     <div id="product-list-container">
         <!-- filter sidebar -->
         <form id="filter-sidebar"> 
+            <input type="hidden" name="search" value="@(search == null ? string.Empty : search)"/>
             <!-- Category -->
-            <input type="hidden" name="category" id="category-input" />
+            <input type="hidden" name="category" id="category-input" value="@(category == null ? string.Empty : category)" />
             <div class="filter-item">
                 <div class="mb-1">
                     <a class="category-link @((bool) filtered == false ? "selected" : string.Empty)" asp-action="Index">Tất cả giày</a>
@@ -56,7 +57,7 @@
             <hr />
 
             <!-- Sort -->
-            <input type="hidden" name="sort" id="sort-input" />
+            <input type="hidden" name="sort" id="sort-input" value="@(sort == null ? string.Empty : sort)" />
             <div class="filter-item">
                 <div class="mb-1">
                     <a href="" data-sort="price_asc" class="sort-link @(sort != null && sort.Equals("price_asc") ? "selected" : string.Empty)">Giá tăng dần</a>

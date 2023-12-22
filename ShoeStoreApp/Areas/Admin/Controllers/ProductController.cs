@@ -49,11 +49,12 @@ namespace ShoeStoreApp.Areas.Admin.Controllers
             var productList = from s in _context.Products select s;
             List<Product> products = _context.Products.ToList();
             Combine combine = new Combine();
-            combine.Products = products;
             if (!String.IsNullOrEmpty(searchString))
             {
                 productList = _context.Products.Where(s => s.Name.Contains(searchString));
             }
+            combine.Products = productList.ToList();
+
             switch (sortOrder)
             {
                 case "price_desc":

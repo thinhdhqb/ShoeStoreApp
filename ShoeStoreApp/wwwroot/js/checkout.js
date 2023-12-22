@@ -11,5 +11,10 @@
 })
 
 $(document).ready(() => {
-    $("#input-address-id").val($("option:selected").val());
+    if ($("option:selected").val() === "new") {
+        $("#form-new-address").removeClass("d-none");
+        $("#btn-order").addClass("d-none");
+    }
+    else
+        $("#input-address-id").val($("option:selected").val());
 })
